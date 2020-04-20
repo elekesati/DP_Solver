@@ -1,0 +1,145 @@
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.geometry.*?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml" 
+          fx:controller="dpsolver.controller.DpSolverController">
+    <columnConstraints>
+        <ColumnConstraints percentWidth="100" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints percentHeight="5" />
+        <RowConstraints percentHeight="90" />
+        <RowConstraints percentHeight="5" />
+    </rowConstraints>
+    
+    <MenuBar GridPane.rowIndex="0" GridPane.columnIndex="0">
+        <menus>
+            <Menu text="File">
+                <items>	
+                    <MenuItem text="Load model"
+                              onAction="#openAction">
+                        <accelerator>
+                            <KeyCodeCombination alt="ANY" code="O" control="DOWN" shift="ANY" meta="ANY" shortcut="ANY"/>     
+                        </accelerator>
+                    </MenuItem>
+                    <MenuItem text="Save model"
+                              onAction="#saveAction">
+                        <accelerator>
+                            <KeyCodeCombination alt="ANY" code="S" control="DOWN" shift="ANY" meta="ANY" shortcut="ANY"/>     
+                        </accelerator>
+                    </MenuItem>
+                </items>
+            </Menu>
+            <Menu text="Run">
+                <items>
+                    <MenuItem text="Run model"
+                              onAction="#runAction">
+                        <accelerator>
+                            <KeyCodeCombination alt="ANY" code="R" control="DOWN" shift="ANY" meta="ANY" shortcut="ANY"/>     
+                        </accelerator>
+                    </MenuItem>
+                </items>
+            </Menu>
+        </menus>
+    </MenuBar>
+    
+    <ScrollPane id="inputPane" 
+                GridPane.rowIndex="1" GridPane.columnIndex="0" 
+                fitToWidth="true" fitToHeight="true">
+        <HBox alignment="CENTER" 
+              minWidth="${inputPane.viewportBounds.width}" 
+              minHeight="${inputPane.viewportBounds.height}" >
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            
+            <children>
+                <GridPane fx:id="formulaInputGridPane"
+                          hgap="30" vgap="10"
+                          alignment="CENTER">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+
+                    <Label styleClass="title"
+                           text="Branch"
+                           GridPane.columnIndex="0"
+                           GridPane.rowIndex="0"/>
+
+                    <Label styleClass="title"
+                           text="Criteria"
+                           GridPane.columnIndex="1"
+                           GridPane.rowIndex="0"/>
+                </GridPane>
+
+                <GridPane hgap="30" vgap="10" alignment="CENTER" >
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+
+                    <Label styleClass="title"
+                           text="Target variable"
+                           GridPane.rowIndex="1"
+                           GridPane.columnIndex="0"/>
+
+                    <TextField fx:id="targetvariableTextField"
+                               GridPane.rowIndex="1"
+                               GridPane.columnIndex="1"
+                               styleClass="input_field" />
+
+                    <Label styleClass="title"
+                           text="Dimension"
+                           GridPane.rowIndex="2"
+                           GridPane.columnIndex="0"/>
+
+                    <TextField fx:id="dimensionTextField"
+                               GridPane.rowIndex="2"
+                               GridPane.columnIndex="1"
+                               styleClass="input_field"/>
+
+                    <Label styleClass="title"
+                           text="Start indexes"
+                           GridPane.rowIndex="3"
+                           GridPane.columnIndex="0"/>
+
+                    <TextField fx:id="startIndexesTextField"
+                               GridPane.rowIndex="3"
+                               GridPane.columnIndex="1"
+                               styleClass="input_field"/>
+
+                    <Label styleClass="title"
+                           text="Result"
+                           GridPane.rowIndex="4"
+                           GridPane.columnIndex="0"/>
+
+                    <TextField fx:id="resultTextField"
+                               GridPane.rowIndex="4"
+                               GridPane.columnIndex="1"
+                               styleClass="input_field"
+                               editable="false" />
+
+                    <Label styleClass="title"
+                           text="Variables"
+                           GridPane.rowIndex="5"
+                           GridPane.columnIndex="0"/>
+
+                    <TextArea fx:id="variablesTextArea"
+                              GridPane.rowIndex="6"
+                              GridPane.columnIndex="0"
+                              GridPane.columnSpan="2" 
+                              styleClass="input_field" />
+
+                    <Button fx:id="addBranchButton"
+                            text="Add branch"
+                            onAction="#addBranchAction"
+                            GridPane.rowIndex="7"
+                            GridPane.columnSpan="2"/>
+                </GridPane>
+            </children>
+        </HBox>
+    </ScrollPane>
+    
+    <Label fx:id="statusBarText" GridPane.rowIndex="2" GridPane.columnIndex="0"/> 
+</GridPane>

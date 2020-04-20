@@ -1,0 +1,36 @@
+.root {
+    -fx-font-size: 12;
+    -fx-font-family: sans-serif;
+    -fx-background-color: #ffffff;
+}
+
+.input_field{
+    -fx-pref-columns: 10;
+    -fx-font-family: monospace;
+}
+
+.toolbar_button{
+    -fx-margin: 3;
+    -fx-font-size: 10;
+    -fx-font-family: arial;
+    -fx-border-style: none;
+    -fx-background-color: transparent;
+}
+
+.title{
+    -fx-margin: 10;
+    -fx-font-family: monospace;
+    -fx-alignment: TOP_CENTER;
+}
+
+#statusBarText {
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10;
+    -fx-font-family: monospace; 
+}
+
+#toolbar {
+    -fx-border-width: 1;
+    -fx-border-color: #000000 #000000 #000000 #000000;
+}
+

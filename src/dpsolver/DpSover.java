@@ -5,10 +5,12 @@
  */
 package dpsolver;
 
+import java.io.File;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
@@ -16,15 +18,37 @@ import javafx.stage.Stage;
  * @author Elekes Attila
  */
 public class DpSover extends Application {
-    
+
+    private static final FileChooser.ExtensionFilter EXT_FILT
+            = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+    private static Stage stage;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("dp_solver.fxml"));
+        stage = primaryStage;
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dpsolver/view/dp_solver_view.fxml"));
+        Parent root = (Parent) fxmlLoader.load();
+
         Scene scene = new Scene(root, 800, 600);
-        scene.getStylesheets().add(getClass().getResource("dp_solver_style.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/dpsolver/view/dp_solver_style.css").toExternalForm());
+
         primaryStage.setScene(scene);
         primaryStage.setTitle("DP-Solver");
         primaryStage.show();
+    }
+
+    public static File openFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(EXT_FILT);
+        fileChooser.setTitle("Open Model");
+        return fileChooser.showOpenDialog(stage);
+    }
+
+    public static File saveFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(EXT_FILT);
+        fileChooser.setTitle("Save Model");
+        return fileChooser.showSaveDialog(stage);
     }
 
     /**
@@ -33,5 +57,5 @@ public class DpSover extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
+
 }
