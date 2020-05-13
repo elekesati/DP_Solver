@@ -5,6 +5,8 @@
  */
 package dpsolver.model;
 
+import dpsolver.helpers.AdditionalFunctions;
+import dpsolver.helpers.DimensionConverter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +27,10 @@ public class Variables {
      * Constructor
      */
     private Variables() {
+    }
+    
+    public static void initialize(){
+        mScalars.put("inf", Double.POSITIVE_INFINITY);
     }
 
     /**

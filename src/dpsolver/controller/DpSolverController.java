@@ -5,6 +5,8 @@
  */
 package dpsolver.controller;
 
+import dpsolver.helpers.FileHandler;
+import dpsolver.helpers.AdditionalFunctions;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -53,6 +55,8 @@ public class DpSolverController implements Initializable {
     @FXML
     private Button addBranchButton;
     @FXML
+    private Button removeBranchButton;
+    @FXML
     private Label statusBarText;
     @FXML
     private TextArea variablesTextArea;
@@ -66,6 +70,8 @@ public class DpSolverController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         updateStatus(START);
+        AdditionalFunctions.initialize();
+        Variables.initialize();
         dpData = new DpData();
         addFormulaInputRow(EMPTY, EMPTY);
         updateStatus(DONE);
@@ -73,10 +79,9 @@ public class DpSolverController implements Initializable {
 
     @FXML
     private void openAction(ActionEvent event) {
-        FileHandler fileHandler = new FileHandler();
         try {
             updateStatus(LOAD);
-            dpData = fileHandler.read(DpSover.openFile());
+            dpData = FileHandler.read(DpSover.openFile());
             updateInputFields();
             updateStatus(DONE);
         } catch (NullPointerException ex) {
@@ -88,11 +93,10 @@ public class DpSolverController implements Initializable {
 
     @FXML
     private void saveAction(ActionEvent event) {
-        FileHandler fileHandler = new FileHandler();
         try {
             updateStatus(SAVE);
             loadInputData();
-            fileHandler.write(DpSover.saveFile(), dpData);
+            FileHandler.write(DpSover.saveFile(), dpData);
             updateStatus(DONE);
         } catch (NullPointerException ex) {
             updateStatus(CANCEL);
@@ -107,7 +111,6 @@ public class DpSolverController implements Initializable {
         try {
             updateStatus(RUN);
             loadInputData();
-            AdditionalFunctions.initialize();
             DynamicProgram.load(dpData);
 
             resultTextField.setText(DynamicProgram.solve(dpData.getStartIndexesArray()).toString());
@@ -123,8 +126,20 @@ public class DpSolverController implements Initializable {
     private void addBranchAction(ActionEvent event) {
         addFormulaInputRow(EMPTY, EMPTY);
     }
+    
+    @FXML
+    private void removeBranchAction(ActionEvent event) {
+        List children = formulaInputGridPane.getChildren();
+        if (children.size() > 4){
+            children.remove(children.size() - 1);
+            children.remove(children.size() - 1);
+        }
+    }
 
     private void addFormulaInputRow(String branchText, String criteriaText) {
+        List children = formulaInputGridPane.getChildren();
+        int numChildren = children.size();
+        
         TextField branchTextField = new TextField();
         branchTextField.setFont(Font.font("monospace"));
         branchTextField.setPrefColumnCount(25);
@@ -192,12 +207,12 @@ public class DpSolverController implements Initializable {
         System.out.println(addBranchButton.getScene());
         System.out.println(addBranchButton.getScene().getAccelerators());
         addBranchButton.getScene().getAccelerators()
-                .put(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN),
-                        new Runnable() {
-                    @Override
-                    public void run() {
-                        addFormulaInputRow(EMPTY, EMPTY);
-                    }
-                });
+            .put(new KeyCodeCombination(KeyCode.A, KeyCombination.ALT_DOWN),
+                    new Runnable() {
+                @Override
+                public void run() {
+                    addFormulaInputRow(EMPTY, EMPTY);
+                }
+            });
     }
 }

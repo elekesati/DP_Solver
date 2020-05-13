@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dpsolver.model;
+package dpsolver.helpers;
 
+import dpsolver.model.DpData;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -22,7 +23,7 @@ public class FileHandler {
     /**
      * Constructor
      */
-    public FileHandler() {
+    private FileHandler() {
     }
 
     /**
@@ -32,7 +33,7 @@ public class FileHandler {
      * @return the input data of the program
      * @throws FileNotFoundException
      */
-    public DpData read(File file) throws FileNotFoundException {
+    public static DpData read(File file) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
 
         List<String> branches = new ArrayList<>();
@@ -82,7 +83,7 @@ public class FileHandler {
      * @param data the input data of the program
      * @throws FileNotFoundException
      */
-    public void write(File file, DpData data) throws FileNotFoundException {
+    public static void write(File file, DpData data) throws FileNotFoundException {
         PrintWriter printWriter = new PrintWriter(file);
         printWriter.print(data.toString());
         printWriter.close();

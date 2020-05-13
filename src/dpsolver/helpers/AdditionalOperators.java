@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dpsolver.model;
+package dpsolver.helpers;
 
 import java.util.Arrays;
 import java.util.List;
@@ -122,7 +122,7 @@ public class AdditionalOperators {
      *
      * @return list of operators
      */
-    static List<Operator> getOperators() {
+    public static List<Operator> getOperators() {
         return Arrays.asList(mOperators);
     }
 }

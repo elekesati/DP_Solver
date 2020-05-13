@@ -18,9 +18,10 @@ import javafx.stage.Stage;
  * @author Elekes Attila
  */
 public class DpSover extends Application {
-
+    
     private static final FileChooser.ExtensionFilter EXT_FILT
             = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+    private static final File workDirectory = new File(System.getProperty("user.home"), "Documents/DP Models");
     private static Stage stage;
 
     @Override
@@ -39,6 +40,12 @@ public class DpSover extends Application {
 
     public static File openFile() {
         FileChooser fileChooser = new FileChooser();
+        
+        if (!workDirectory.exists()){
+            workDirectory.mkdirs();
+        }
+        
+        fileChooser.setInitialDirectory(workDirectory);
         fileChooser.getExtensionFilters().add(EXT_FILT);
         fileChooser.setTitle("Open Model");
         return fileChooser.showOpenDialog(stage);
@@ -46,6 +53,12 @@ public class DpSover extends Application {
 
     public static File saveFile() {
         FileChooser fileChooser = new FileChooser();
+        
+        if (!workDirectory.exists()){
+            workDirectory.mkdirs();
+        }
+        
+        fileChooser.setInitialDirectory(workDirectory);
         fileChooser.getExtensionFilters().add(EXT_FILT);
         fileChooser.setTitle("Save Model");
         return fileChooser.showSaveDialog(stage);

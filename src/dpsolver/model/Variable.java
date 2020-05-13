@@ -5,6 +5,7 @@
  */
 package dpsolver.model;
 
+import dpsolver.helpers.DimensionConverter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -66,6 +66,7 @@ public class DynamicProgram {
      */
     public static void restart() {
         Variables.clear();
+        Variables.initialize();
         mTargetVariable = new String();
         mFormula.clear();
     }

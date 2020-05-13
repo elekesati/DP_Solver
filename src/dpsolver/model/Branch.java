@@ -5,6 +5,8 @@
  */
 package dpsolver.model;
 
+import dpsolver.helpers.AdditionalOperators;
+import dpsolver.helpers.AdditionalFunctions;
 import javafx.util.Pair;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;

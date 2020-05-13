@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dpsolver.model;
+package dpsolver.helpers;
 
+import dpsolver.model.DynamicProgram;
+import dpsolver.model.Variables;
 import java.util.ArrayList;
 import java.util.List;
 import net.objecthunter.exp4j.function.Function;

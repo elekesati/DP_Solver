@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dpsolver.model;
+package dpsolver.helpers;
 
 /**
  * Contains functions which can convert multidimensional index to linear and
@@ -27,7 +27,7 @@ public class DimensionConverter {
      * @param indexes array of indexes
      * @return index in the corresponding linear representation
      */
-    protected static int multiDimensonalToLinear(int[] bounds, int[] indexes) {
+    public static int multiDimensonalToLinear(int[] bounds, int[] indexes) {
         int prod = 1;
         int index = 0;
 
@@ -51,7 +51,7 @@ public class DimensionConverter {
      * @param index index
      * @return indexes in the corresponding multidimensional representation
      */
-    protected static int[] linearToMultiDimensional(int[] bounds, int index) {
+    public static int[] linearToMultiDimensional(int[] bounds, int index) {
         int prod = 1;
         int[] indexes = new int[bounds.length];
 
