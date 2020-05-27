@@ -17,7 +17,11 @@ import net.objecthunter.exp4j.Expression;
  */
 public class Formula {
 
+    private static final String ELSE = "else";
+    private static final String EXCEPTION_MESSAGE = "Input formula can have only one else branch.";
     private final List<Branch> mBranches;
+    private boolean mHasElseBranch = false;
+    private byte mElseBranchPosition; 
 
     /**
      * Constructor
@@ -32,12 +36,46 @@ public class Formula {
      * @param branch the formula of the branch
      * @param criteria the criteria which defines when to use this branch
      */
-    public void addBranch(String branch, String criteria) {
-        mBranches.add(new Branch(branch, criteria));
+    public void addBranch(String branch, String criteria) throws IllegalArgumentException {
+        
+        if (criteria.equals(ELSE)){
+            if (mHasElseBranch){
+                throw new IllegalArgumentException(EXCEPTION_MESSAGE);
+            }
+            else{
+                mHasElseBranch = true;
+                mElseBranchPosition = (byte) mBranches.size();
+                criteria = "1";
+            }
+        }
+        
+        if (mHasElseBranch){
+            mBranches.add(mElseBranchPosition, new Branch(branch, criteria));
+        }
+        else{
+            mBranches.add(new Branch(branch, criteria));
+        }
     }
 
-    public void addBranch(Pair<String, String> branch) {
-        mBranches.add(new Branch(branch));
+    public void addBranch(Pair<String, String> branch) throws IllegalArgumentException {
+        
+        if (branch.getValue().equals(ELSE)){
+            if (mHasElseBranch){
+                throw new IllegalArgumentException(EXCEPTION_MESSAGE);
+            }
+            else{
+                mHasElseBranch = true;
+                mElseBranchPosition = (byte) mBranches.size();
+                branch = new Pair<>(branch.getKey(), "1");
+            }
+        }
+        
+        if (mHasElseBranch){
+            mBranches.add(mElseBranchPosition, new Branch(branch));
+        }
+        else{
+            mBranches.add(new Branch(branch));
+        }
     }
 
     /**
@@ -46,7 +84,7 @@ public class Formula {
      * @param branches array of branches
      * @param criterias array of criterias
      */
-    public void addBranches(String[] branches, String[] criterias) {
+    public void addBranches(String[] branches, String[] criterias) throws IllegalArgumentException {
         for (int i = 0; i < branches.length; ++i) {
             addBranch(branches[i], criterias[i]);
         }
@@ -55,10 +93,9 @@ public class Formula {
     /**
      * Returns the corresponding branch for the cell specified by its indexes
      *
-     * @param indexes cell indexes
      * @return corresponding branch
      */
-    public Expression getCorrespondingBranchExpression(int... indexes) {
+    public Expression getActualBranchExpression() {
         for (int i = 0; i < mBranches.size(); ++i) {
             if (mBranches
                     .get(i)
@@ -94,5 +131,6 @@ public class Formula {
      */
     public void clear() {
         mBranches.clear();
+        mHasElseBranch = false;
     }
 }

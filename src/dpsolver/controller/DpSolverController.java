@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import dpsolver.model.*;
 import dpsolver.DpSover;
+import java.io.File;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -36,6 +37,7 @@ public class DpSolverController implements Initializable {
     private static final String START = "Starting.";
     private static final String LOAD = "Loading model.";
     private static final String SAVE = "Saving model.";
+    private static final String CREATE = "Creating model.";
     private static final String RUN = "Run.";
     private static final String DONE = "Done.";
     private static final String INPUT_ERROR = "Input error ";
@@ -76,13 +78,28 @@ public class DpSolverController implements Initializable {
         addFormulaInputRow(EMPTY, EMPTY);
         updateStatus(DONE);
     }
-
+    
+    @FXML
+    private void newAction(ActionEvent event) {
+        try {
+            updateStatus(CREATE);
+            DpSover.setFileName("Untitled");
+            resetInputFields();
+            updateStatus(DONE);
+        } catch (NullPointerException ex) {
+            updateStatus(CANCEL);
+        } catch (Exception ex) {
+            updateStatus(ex.getMessage());
+        }
+    }
     @FXML
     private void openAction(ActionEvent event) {
         try {
             updateStatus(LOAD);
-            dpData = FileHandler.read(DpSover.openFile());
+            File model = DpSover.openFile();
+            dpData = FileHandler.read(model);
             updateInputFields();
+            DpSover.setFileName(model.getName());
             updateStatus(DONE);
         } catch (NullPointerException ex) {
             updateStatus(CANCEL);
@@ -96,7 +113,9 @@ public class DpSolverController implements Initializable {
         try {
             updateStatus(SAVE);
             loadInputData();
-            FileHandler.write(DpSover.saveFile(), dpData);
+            File model = DpSover.saveFile();
+            FileHandler.write(model, dpData);
+            DpSover.setFileName(model.getName());
             updateStatus(DONE);
         } catch (NullPointerException ex) {
             updateStatus(CANCEL);
@@ -112,13 +131,16 @@ public class DpSolverController implements Initializable {
             updateStatus(RUN);
             loadInputData();
             DynamicProgram.load(dpData);
-
+            
             resultTextField.setText(DynamicProgram.solve(dpData.getStartIndexesArray()).toString());
+            DynamicProgram.printLog();
+            System.out.println("");
+            DynamicProgram.printHierarchy();
             updateStatus(DONE);
         } catch (NumberFormatException ex) {
             updateStatus(INPUT_ERROR + ex.getMessage() + ".");
         } catch (Exception ex) {
-            updateStatus(ex.getMessage());
+            updateStatus(ex.toString() + " " + ex.getMessage());
         }
     }
 
@@ -162,16 +184,16 @@ public class DpSolverController implements Initializable {
         List children = formulaInputGridPane.getChildren();
 
         for (int i = 2; i < children.size(); i += 2) {
-            branches.add(((TextField) children.get(i)).getText());
-            criterias.add(((TextField) children.get(i + 1)).getText());
+            branches.add(((TextField) children.get(i)).getText().trim());
+            criterias.add(((TextField) children.get(i + 1)).getText().trim());
         }
-
+        
         dpData.setBranches(branches)
                 .setCriterias(criterias)
-                .setDimension(dimensionTextField.getText())
-                .setStartIndexes(startIndexesTextField.getText())
-                .setTargetVariable(targetvariableTextField.getText())
-                .setVariables(variablesTextArea.getText().split("\n"));
+                .setDimension(dimensionTextField.getText().trim())
+                .setStartIndexes(startIndexesTextField.getText().trim())
+                .setTargetVariable(targetvariableTextField.getText().trim())
+                .setVariables(variablesTextArea.getText().trim().split("\n"));
     }
 
     private void updateInputFields() {
@@ -183,19 +205,41 @@ public class DpSolverController implements Initializable {
         List<String> criterias = dpData.getCriterias();
         String[] variables = dpData.getVariables();
 
+        int textFieldIndex = 2;
+        
         for (int i = 0; i < branches.size(); ++i) {
-            if (i == 0) {
-                ((TextField) formulaInputGridPane.getChildren().get(2)).setText(branches.get(i));
-                ((TextField) formulaInputGridPane.getChildren().get(3)).setText(criterias.get(i));
+            if (textFieldIndex < formulaInputGridPane.getChildren().size()) {
+                ((TextField) formulaInputGridPane.getChildren().get(textFieldIndex)).setText(branches.get(i));
+                ++textFieldIndex;
+                ((TextField) formulaInputGridPane.getChildren().get(textFieldIndex)).setText(criterias.get(i));
+                ++textFieldIndex;
             } else {
                 addFormulaInputRow(branches.get(i), criterias.get(i));
+                textFieldIndex += 2;
             }
         }
 
+        variablesTextArea.clear();
         for (int i = 0; i < variables.length; ++i) {
             variablesTextArea.appendText(variables[i]);
             variablesTextArea.appendText("\n");
         }
+    }
+    
+    private void resetInputFields() {
+        dimensionTextField.clear();
+        startIndexesTextField.clear();
+        targetvariableTextField.clear();
+        variablesTextArea.clear();
+
+        List children = formulaInputGridPane.getChildren();
+        while (children.size() > 4){
+            children.remove(children.size() - 1);
+            children.remove(children.size() - 1);
+        }
+        
+        ((TextField) children.get(children.size() - 1)).clear();
+        ((TextField) children.get(children.size() - 2)).clear();
     }
 
     private void updateStatus(String text) {

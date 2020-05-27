@@ -5,7 +5,12 @@
  */
 package dpsolver.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import net.objecthunter.exp4j.Expression;
 
 /**
@@ -17,6 +22,13 @@ public class DynamicProgram {
 
     private static Formula mFormula = new Formula();
     private static String mTargetVariable;
+
+    private static boolean mError = false;
+    private static boolean mHasCircle = false;
+    private static boolean mIndexOutOfBounds = false;
+    
+    private static List<DpLog> mLog = new ArrayList<>();
+    private static Map<String, HashSet<int[]>> mHierarchy = new HashMap<>();
 
     /**
      * Loads the input data and builds the dynamic program
@@ -48,16 +60,70 @@ public class DynamicProgram {
      * @return
      */
     public static Double solve(int... args) {
-        Double result = Variables.getVector(mTargetVariable).getValue(args);
-        if (result.isNaN()) {
-            int[] tempArgs = Variables.getIndexes();
-            Variables.setIndexes(args);
-            result = new Expression(mFormula
-                    .getCorrespondingBranchExpression(args))
-                    .evaluate();
-            Variables.updateVector(mTargetVariable, result, args);
-            Variables.setIndexes(tempArgs);
+        if (mError) {
+            return Double.NaN;
         }
+
+        TargetVariable targetVariable = (TargetVariable) Variables.getVector(mTargetVariable);
+        int[] parentArgs = Variables.getIndexes();
+        Double result = Double.NaN;
+
+        try {
+            result = targetVariable.getValue(args);
+            
+            mLog.add(new DpLog(DpLog.GET, result.toString(), args, parentArgs));
+            
+            String key = Arrays.toString(parentArgs);
+            if (!mHierarchy.containsKey(key)){
+                if (mHierarchy.isEmpty()){
+                    key = "start";
+                }
+                mHierarchy.put(key, new HashSet<>());
+            }
+            mHierarchy.get(key).add(args);
+
+            if (targetVariable.getStatus(args) == TargetVariable.GRAY) {
+                mError = true;
+                mHasCircle = true;
+                result = Double.NaN;
+                
+                mLog.add(new DpLog(DpLog.ERROR, "circle", args, parentArgs));
+            }
+
+            if (targetVariable.getStatus(args) == TargetVariable.WHITE) {
+                targetVariable.updateStatus(TargetVariable.GRAY, args);
+            }
+
+            if (result.isNaN()) {
+                Variables.setIndexes(args);
+                result = new Expression(mFormula
+                        .getActualBranchExpression())
+                        .evaluate();
+                Variables.updateVector(mTargetVariable, result, args);
+                Variables.setIndexes(parentArgs);
+                
+                mLog.add(new DpLog(DpLog.SET, result.toString(), args, parentArgs));
+            }
+
+            targetVariable.updateStatus(TargetVariable.BLACK, args);
+            
+        } catch (IndexOutOfBoundsException e) {
+            Variables.setIndexes(args);
+            Expression expression = mFormula.getActualBranchExpression();
+
+            if (expression != null) {
+                result = expression.evaluate();
+            } else {
+                mError = true;
+                mIndexOutOfBounds = true;
+                result = Double.NaN;
+                
+                mLog.add(new DpLog(DpLog.ERROR, "index out of bound", args, parentArgs));
+            }
+            
+            Variables.setIndexes(parentArgs);
+        }
+        
         return result;
     }
 
@@ -69,5 +135,27 @@ public class DynamicProgram {
         Variables.initialize();
         mTargetVariable = new String();
         mFormula.clear();
+        mLog.clear();
+        mHierarchy.clear();
+        mError = false;
+        mHasCircle = false;
+        mIndexOutOfBounds = false;
+    }
+    
+    public static void printLog(){
+        for (DpLog log : mLog){
+            System.out.println(log.toString());
+        }
+    }
+    
+    public static void printHierarchy(){
+        for (Map.Entry<String, HashSet<int[]>> node : mHierarchy.entrySet()){
+            System.out.print(node.getKey());
+            System.out.print("={");
+            for (int[] child : node.getValue()){
+                System.out.print(Arrays.toString(child));
+            }
+            System.out.println("}");
+        }
     }
 }

@@ -19,8 +19,7 @@ import javafx.stage.Stage;
  */
 public class DpSover extends Application {
     
-    private static final FileChooser.ExtensionFilter EXT_FILT
-            = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+    private static final FileChooser.ExtensionFilter EXT_FILT = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
     private static final File workDirectory = new File(System.getProperty("user.home"), "Documents/DP Models");
     private static Stage stage;
 
@@ -33,9 +32,9 @@ public class DpSover extends Application {
         Scene scene = new Scene(root, 800, 600);
         scene.getStylesheets().add(getClass().getResource("/dpsolver/view/dp_solver_style.css").toExternalForm());
 
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("DP-Solver");
-        primaryStage.show();
+        stage.setScene(scene);
+        stage.setTitle("DP-Solver - Untitled");
+        stage.show();
     }
 
     public static File openFile() {
@@ -62,6 +61,10 @@ public class DpSover extends Application {
         fileChooser.getExtensionFilters().add(EXT_FILT);
         fileChooser.setTitle("Save Model");
         return fileChooser.showSaveDialog(stage);
+    }
+    
+    public static void setFileName(String fileName){
+        stage.setTitle("DP-Solver - " + fileName);
     }
 
     /**

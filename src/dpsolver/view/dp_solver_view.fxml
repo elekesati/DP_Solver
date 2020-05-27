@@ -18,6 +18,12 @@
         <menus>
             <Menu text="File">
                 <items>	
+                    <MenuItem text="New model"
+                              onAction="#newAction">
+                        <accelerator>
+                            <KeyCodeCombination alt="ANY" code="N" control="DOWN" shift="ANY" meta="ANY" shortcut="ANY"/>     
+                        </accelerator>
+                    </MenuItem>
                     <MenuItem text="Load model"
                               onAction="#openAction">
                         <accelerator>

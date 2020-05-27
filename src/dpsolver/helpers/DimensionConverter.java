@@ -26,8 +26,28 @@ public class DimensionConverter {
      * @param bounds dimension limits
      * @param indexes array of indexes
      * @return index in the corresponding linear representation
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
      */
-    public static int multiDimensonalToLinear(int[] bounds, int[] indexes) {
+    public static int multiDimensonalToLinear(int[] bounds, int[] indexes)
+            throws IndexOutOfBoundsException, IllegalArgumentException {
+
+        if (bounds.length != indexes.length) {
+            throw new IllegalArgumentException("Arrays must have same size.");
+        }
+
+        for (int i = 0; i < bounds.length; ++i) {
+            if (bounds[i] <= 0) {
+                throw new IllegalArgumentException("Bounds must be greater or equal then one.");
+            }
+        }
+
+        for (int i = 0; i < bounds.length; ++i) {
+            if (indexes[i] < 0 || indexes[i] >= bounds[i]) {
+                throw new IndexOutOfBoundsException("Index out of bounds");
+            }
+        }
+
         int prod = 1;
         int index = 0;
 
@@ -50,8 +70,22 @@ public class DimensionConverter {
      * @param bounds dimension limits
      * @param index index
      * @return indexes in the corresponding multidimensional representation
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
      */
-    public static int[] linearToMultiDimensional(int[] bounds, int index) {
+    public static int[] linearToMultiDimensional(int[] bounds, int index)
+            throws IndexOutOfBoundsException, IllegalArgumentException {
+
+        for (int i = 0; i < bounds.length; ++i) {
+            if (bounds[i] <= 0) {
+                throw new IllegalArgumentException("Bounds must be greater or equal then one.");
+            }
+        }
+
+        if (index >= capacity(bounds)) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+
         int prod = 1;
         int[] indexes = new int[bounds.length];
 
@@ -67,5 +101,29 @@ public class DimensionConverter {
 
         indexes[bounds.length - 1] = index;
         return indexes;
+    }
+
+    /**
+     * Returns the capacity of a multidimensional variable.
+     *
+     * @param bounds dimension limits
+     * @return capacity
+     * @throws IllegalArgumentException
+     */
+    public static int capacity(int... bounds) throws IllegalArgumentException {
+
+        for (int i = 0; i < bounds.length; ++i) {
+            if (bounds[i] <= 0) {
+                throw new IllegalArgumentException("Bounds must be greater or equal then one.");
+            }
+        }
+
+        int prod = 1;
+
+        for (int i = 0; i < bounds.length; ++i) {
+            prod *= bounds[i];
+        }
+
+        return prod;
     }
 }

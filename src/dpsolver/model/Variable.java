@@ -18,8 +18,8 @@ import java.util.List;
 public class Variable {
 
     private final String mKey;
-    private final int[] mBounds;
-    private final List<Double> mValues;
+    final int[] mBounds;
+    final List<Double> mValues;
 
     /**
      * Constructor
@@ -30,8 +30,8 @@ public class Variable {
     public Variable(String key, int... bounds) {
         this.mKey = key;
         this.mBounds = bounds;
-        int size = DimensionConverter.multiDimensonalToLinear(bounds, bounds);
-        this.mValues = new ArrayList<>(Collections.nCopies(size, Double.NaN));
+        int capacity = DimensionConverter.capacity(bounds);
+        this.mValues = new ArrayList<>(Collections.nCopies(capacity, Double.NaN));
     }
 
     /**

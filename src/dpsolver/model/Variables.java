@@ -132,7 +132,15 @@ public class Variables {
             dimensionLimits[i] = Integer.parseInt(dimensionLimitsString[i]);
         }
 
-        mVectors.put(variableName, new Variable(variableName, dimensionLimits));
+        if (isTarget){
+            mVectors.put(variableName, new TargetVariable(variableName, dimensionLimits));
+            mTargetVariable = variableName;
+        }
+        else{
+            mVectors.put(variableName, new Variable(variableName, dimensionLimits));
+        }
+        
+        
         AdditionalFunctions.addFunction(variableName, dimensionLimits.length, isTarget);
 
         if (!value.isEmpty()) {
@@ -141,15 +149,10 @@ public class Variables {
                         setValue(Double.parseDouble(values[i]), i);
             }
         } else {
-            int limit = DimensionConverter.
-                    multiDimensonalToLinear(dimensionLimits, dimensionLimits);
-            for (int i = 0; i < limit; ++i) {
+            int capacity = DimensionConverter.capacity(dimensionLimits);
+            for (int i = 0; i < capacity; ++i) {
                 mVectors.get(variableName).setValue(Double.NaN, i);
             }
-        }
-
-        if (isTarget) {
-            mTargetVariable = variableName;
         }
     }
 
