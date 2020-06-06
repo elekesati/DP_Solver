@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.geometry.*?>
+
+<GridPane styleClass="root" 
+          xmlns:fx="http://javafx.com/fxml/1" 
+          fx:controller="dpsolver.controller.VisualizationController" >
+    
+    <stylesheets>
+        <URL value="@visualization_view.css"/>
+    </stylesheets>
+    
+    <columnConstraints>
+        <ColumnConstraints percentWidth="100" />
+    </columnConstraints>
+    
+    <rowConstraints>
+        <RowConstraints percentHeight="90" />
+        <RowConstraints percentHeight="5" />
+        <RowConstraints percentHeight="5" />
+    </rowConstraints>
+    
+    <GridPane GridPane.rowIndex="0"
+              GridPane.columnIndex="0"
+              prefWidth="${space.parent.width}"
+              prefHeight="${space.parent.height}"
+              alignment="CENTER" 
+              fx:id="space"/>
+    
+    <HBox GridPane.rowIndex="1" 
+          GridPane.columnIndex="0"   
+          GridPane.fillWidth="true"
+          GridPane.fillHeight="true"  
+          spacing="10">
+        
+        <padding>
+            <Insets top="15" right="15" bottom="15" left="15"/>
+        </padding>
+        
+        <Button text="|&lt;&lt;"
+                onAction="#backwardAction"
+                fx:id="backwardButton" /> 
+        
+        <Button text="Play"
+                onAction="#playAction"
+                fx:id="playButton" /> 
+        
+        <Button text="Pause"
+                onAction="#pauseAction"
+                fx:id="pauseButton" /> 
+        
+        <Button text="Stop"
+                onAction="#stopAction"
+                fx:id="stopButton" /> 
+        
+        <Button text="&gt;&gt;|"
+                onAction="#forwardAction"
+                fx:id="forwardButton" /> 
+                
+        <Button text="Full Screen"
+                onAction="#fullScreenAction"
+                fx:id="fullScreenButton" /> 
+    </HBox>
+    
+    <Label fx:id="statusBarText" GridPane.rowIndex="2" GridPane.columnIndex="0"/> 
+</GridPane>

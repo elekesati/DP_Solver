@@ -21,29 +21,62 @@ public class DpData {
     private String mDimension;
     private String mStartIndexes;
 
+    /**
+     * Constructor
+     */
     public DpData() {
+        mBranches = null;
+        mCriterias = null;
+        mVariables = null;
+        mTargetVariable = null;
+        mDimension = null;
+        mStartIndexes = null;
     }
 
+    /**
+     * Returns the list of branches.
+     * @return list of branches
+     */
     public List<String> getBranches() {
         return mBranches;
     }
 
+    /**
+     * Returns the list of criterias.
+     * @return list of criterias
+     */
     public List<String> getCriterias() {
         return mCriterias;
     }
 
+    /**
+     * Returns the array of variables.
+     * @return array of variables
+     */
     public String[] getVariables() {
         return mVariables;
     }
 
+    /**
+     * Returns the target variable.
+     * @return the target variable
+     */
     public String getTargetVariable() {
         return mTargetVariable;
     }
 
+    /**
+     * Returns the dimension
+     * @return the dimension
+     */
     public String getDimension() {
         return mDimension;
     }
 
+    /**
+     * Returns the start indexes
+     * @return the start indexes
+     */
     public String getStartIndexes() {
         return mStartIndexes;
     }
@@ -78,15 +111,22 @@ public class DpData {
         return this;
     }
 
+    /**
+     * Clears all fields. By default all fields are null.
+     */
     public void clear() {
-        mBranches.clear();
-        mCriterias.clear();
+        mBranches = null;
+        mCriterias = null;
         mVariables = null;
-        mTargetVariable = "";
-        mDimension = "";
-        mStartIndexes = "";
+        mTargetVariable = null;
+        mDimension = null;
+        mStartIndexes = null;
     }
 
+    /**
+     * Returns the array of start indexes
+     * @return array of start indexes
+     */
     public int[] getStartIndexesArray() {
         String[] indexStrings = mStartIndexes.split(",");
         int[] indexes = new int[indexStrings.length];
@@ -96,6 +136,19 @@ public class DpData {
         }
 
         return indexes;
+    }
+
+    /**
+     * Check if all fields are empty.
+     * @return 
+     */
+    public boolean isEmpty() {
+        return mBranches == null
+                && mCriterias == null
+                && mVariables == null
+                && mTargetVariable == null
+                && mDimension == null
+                && mStartIndexes == null;
     }
 
     @Override
@@ -126,5 +179,29 @@ public class DpData {
                 .concat(mStartIndexes);
 
         return string;
+    }
+    
+    @Override
+    public boolean equals(Object object){
+        if (this == object) {
+            return true;
+        }
+        
+        if (object == null) {
+            return false;
+        }
+        
+        if (this.getClass() != object.getClass()){
+            return false;
+        }
+        
+        DpData dpData = (DpData) object;
+        
+        return this.mBranches == dpData.mBranches
+                && this.mCriterias == dpData.mCriterias
+                && this.mVariables == dpData.mVariables
+                && this.mTargetVariable.equals(dpData.mTargetVariable)
+                && this.mDimension.equals(dpData.mDimension)
+                && this.mStartIndexes.equals(dpData.mStartIndexes);
     }
 }

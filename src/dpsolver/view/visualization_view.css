@@ -1,0 +1,14 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.root {
+    -fx-pref-columns: 10;
+    -fx-font-family: monospace;
+}
+
+#statusBarText {
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10;
+    -fx-font-family: monospace; 
+}

@@ -26,7 +26,7 @@ public class DynamicProgram {
     private static boolean mError = false;
     private static boolean mHasCircle = false;
     private static boolean mIndexOutOfBounds = false;
-    
+
     private static List<DpLog> mLog = new ArrayList<>();
     private static Map<String, HashSet<int[]>> mHierarchy = new HashMap<>();
 
@@ -70,12 +70,12 @@ public class DynamicProgram {
 
         try {
             result = targetVariable.getValue(args);
-            
+
             mLog.add(new DpLog(DpLog.GET, result.toString(), args, parentArgs));
-            
+
             String key = Arrays.toString(parentArgs);
-            if (!mHierarchy.containsKey(key)){
-                if (mHierarchy.isEmpty()){
+            if (!mHierarchy.containsKey(key)) {
+                if (mHierarchy.isEmpty()) {
                     key = "start";
                 }
                 mHierarchy.put(key, new HashSet<>());
@@ -86,7 +86,7 @@ public class DynamicProgram {
                 mError = true;
                 mHasCircle = true;
                 result = Double.NaN;
-                
+
                 mLog.add(new DpLog(DpLog.ERROR, "circle", args, parentArgs));
             }
 
@@ -101,12 +101,12 @@ public class DynamicProgram {
                         .evaluate();
                 Variables.updateVector(mTargetVariable, result, args);
                 Variables.setIndexes(parentArgs);
-                
+
                 mLog.add(new DpLog(DpLog.SET, result.toString(), args, parentArgs));
             }
 
             targetVariable.updateStatus(TargetVariable.BLACK, args);
-            
+
         } catch (IndexOutOfBoundsException e) {
             Variables.setIndexes(args);
             Expression expression = mFormula.getActualBranchExpression();
@@ -117,13 +117,13 @@ public class DynamicProgram {
                 mError = true;
                 mIndexOutOfBounds = true;
                 result = Double.NaN;
-                
+
                 mLog.add(new DpLog(DpLog.ERROR, "index out of bound", args, parentArgs));
             }
-            
+
             Variables.setIndexes(parentArgs);
         }
-        
+
         return result;
     }
 
@@ -141,21 +141,43 @@ public class DynamicProgram {
         mHasCircle = false;
         mIndexOutOfBounds = false;
     }
-    
-    public static void printLog(){
-        for (DpLog log : mLog){
+
+    /**
+     * Prints the steps of the recursive calls.
+     */
+    public static void printLog() {
+        for (DpLog log : mLog) {
             System.out.println(log.toString());
         }
     }
-    
-    public static void printHierarchy(){
-        for (Map.Entry<String, HashSet<int[]>> node : mHierarchy.entrySet()){
+
+    /**
+     * Prints the parent-children relations defined by the recursive calls.
+     */
+    public static void printHierarchy() {
+        for (Map.Entry<String, HashSet<int[]>> node : mHierarchy.entrySet()) {
             System.out.print(node.getKey());
             System.out.print("={");
-            for (int[] child : node.getValue()){
+            for (int[] child : node.getValue()) {
                 System.out.print(Arrays.toString(child));
             }
             System.out.println("}");
         }
+    }
+
+    /**
+     * Returns the steps of the recursive calls.
+     * @return log of the steps
+     */
+    public static List<DpLog> getLog() {
+        return mLog;
+    }
+
+    /**
+     * Returns the parent-children relations defined by the recursive calls.
+     * @return the parent-children relations
+     */
+    public static Map<String, HashSet<int[]>> getHierarchy() {
+        return mHierarchy;
     }
 }

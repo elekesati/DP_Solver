@@ -5,66 +5,122 @@
  */
 package dpsolver;
 
+import dpsolver.controller.VisualizationController;
+import dpsolver.model.DpData;
+import dpsolver.model.DpLog;
 import java.io.File;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  *
  * @author Elekes Attila
  */
 public class DpSover extends Application {
-    
+
     private static final FileChooser.ExtensionFilter EXT_FILT = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
     private static final File workDirectory = new File(System.getProperty("user.home"), "Documents/DP Models");
-    private static Stage stage;
+    private static Stage mainStage;
+    private static Stage visualizationStage;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        stage = primaryStage;
+        mainStage = primaryStage;
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dpsolver/view/dp_solver_view.fxml"));
         Parent root = (Parent) fxmlLoader.load();
+        Scene scene = new Scene(root);
 
-        Scene scene = new Scene(root, 800, 600);
-        scene.getStylesheets().add(getClass().getResource("/dpsolver/view/dp_solver_style.css").toExternalForm());
+        mainStage.setScene(scene);
+        mainStage.setTitle("DP-Solver - Untitled");
+        mainStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                Platform.exit();
+            }
+        });
+        mainStage.show();
 
-        stage.setScene(scene);
-        stage.setTitle("DP-Solver - Untitled");
-        stage.show();
+        ((dpsolver.controller.DpSolverController) fxmlLoader.getController()).initializeAccelerators();
     }
 
+    /**
+     * Creates new window for the visualization.
+     * @param dpData DpData of the model
+     * @param log sequence of the steps and log of the errors
+     * @param hierarchy parent-child relations between the nodes
+     * @throws Exception 
+     */
+    public static void newWindow(DpData dpData, List<DpLog> log, Map<String, HashSet<int[]>> hierarchy)
+            throws Exception {
+        visualizationStage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(DpSover.class.getResource("/dpsolver/view/visualization_view.fxml"));
+        Parent root = (Parent) fxmlLoader.load();
+        Scene scene = new Scene(root);
+
+        visualizationStage.setScene(scene);
+        visualizationStage.setTitle(mainStage.getTitle());
+        visualizationStage.setFullScreen(true);
+        visualizationStage.setResizable(false);
+        visualizationStage.show();
+
+        VisualizationController visualizationController = (VisualizationController) fxmlLoader.getController();
+        visualizationController.initializeData(dpData, log, hierarchy);
+        visualizationController.setStage(visualizationStage);
+        visualizationController.prepareVisualization();
+        visualizationController.initializeAccelerators();
+    }
+
+    /**
+     * Shows a file chooser window for opening a model.
+     * @return selected file
+     */
     public static File openFile() {
         FileChooser fileChooser = new FileChooser();
-        
-        if (!workDirectory.exists()){
+
+        if (!workDirectory.exists()) {
             workDirectory.mkdirs();
         }
-        
+
         fileChooser.setInitialDirectory(workDirectory);
         fileChooser.getExtensionFilters().add(EXT_FILT);
         fileChooser.setTitle("Open Model");
-        return fileChooser.showOpenDialog(stage);
+        return fileChooser.showOpenDialog(mainStage);
     }
 
+    /**
+     * Shows a file chooser window for saving a model.
+     * @return selected file
+     */
     public static File saveFile() {
         FileChooser fileChooser = new FileChooser();
-        
-        if (!workDirectory.exists()){
+
+        if (!workDirectory.exists()) {
             workDirectory.mkdirs();
         }
-        
+
         fileChooser.setInitialDirectory(workDirectory);
         fileChooser.getExtensionFilters().add(EXT_FILT);
         fileChooser.setTitle("Save Model");
-        return fileChooser.showSaveDialog(stage);
+        return fileChooser.showSaveDialog(mainStage);
     }
-    
-    public static void setFileName(String fileName){
-        stage.setTitle("DP-Solver - " + fileName);
+
+    /**
+     * Updates the title of the window with the name of the opened file
+     * @param fileName name of the opened file
+     */
+    public static void setFileName(String fileName) {
+        mainStage.setTitle("DP-Solver - " + fileName);
     }
 
     /**

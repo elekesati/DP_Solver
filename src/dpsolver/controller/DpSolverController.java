@@ -23,6 +23,7 @@ import java.util.List;
 import dpsolver.model.*;
 import dpsolver.DpSover;
 import java.io.File;
+import javafx.scene.control.Alert;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -59,12 +60,15 @@ public class DpSolverController implements Initializable {
     @FXML
     private Button removeBranchButton;
     @FXML
+    private Button showVisualizationButton;
+    @FXML
     private Label statusBarText;
     @FXML
     private TextArea variablesTextArea;
 
     private int numRows = 1;
     private DpData dpData;
+    private boolean dpDone = false;
 
     /**
      * Initializes the controller class.
@@ -78,13 +82,18 @@ public class DpSolverController implements Initializable {
         addFormulaInputRow(EMPTY, EMPTY);
         updateStatus(DONE);
     }
-    
+
+    /**
+     * Creates a new empty model. Clears all input fields.
+     */
     @FXML
     private void newAction(ActionEvent event) {
         try {
             updateStatus(CREATE);
             DpSover.setFileName("Untitled");
             resetInputFields();
+            dpData.clear();
+            dpDone = false;
             updateStatus(DONE);
         } catch (NullPointerException ex) {
             updateStatus(CANCEL);
@@ -92,6 +101,10 @@ public class DpSolverController implements Initializable {
             updateStatus(ex.getMessage());
         }
     }
+
+    /**
+     * Loads a model from file.
+     */
     @FXML
     private void openAction(ActionEvent event) {
         try {
@@ -108,6 +121,9 @@ public class DpSolverController implements Initializable {
         }
     }
 
+    /**
+     * Saves a model to file.
+     */
     @FXML
     private void saveAction(ActionEvent event) {
         try {
@@ -124,44 +140,94 @@ public class DpSolverController implements Initializable {
         }
     }
 
+    /**
+     * Runs the dynamic program.
+     */
     @FXML
     private void runAction(ActionEvent event) {
         DynamicProgram.restart();
+        dpDone = false;
         try {
             updateStatus(RUN);
             loadInputData();
             DynamicProgram.load(dpData);
-            
             resultTextField.setText(DynamicProgram.solve(dpData.getStartIndexesArray()).toString());
-            DynamicProgram.printLog();
-            System.out.println("");
-            DynamicProgram.printHierarchy();
             updateStatus(DONE);
         } catch (NumberFormatException ex) {
             updateStatus(INPUT_ERROR + ex.getMessage() + ".");
         } catch (Exception ex) {
             updateStatus(ex.toString() + " " + ex.getMessage());
+        } finally {
+            dpDone = true;
         }
     }
 
+    /**
+     * Adds two new empty input fields for a new branch.
+     */
     @FXML
     private void addBranchAction(ActionEvent event) {
         addFormulaInputRow(EMPTY, EMPTY);
     }
-    
+
+    /**
+     * Removes a pair of input fields from the formula ecction of the UI.
+     */
     @FXML
     private void removeBranchAction(ActionEvent event) {
         List children = formulaInputGridPane.getChildren();
-        if (children.size() > 4){
+        if (children.size() > 4) {
             children.remove(children.size() - 1);
             children.remove(children.size() - 1);
         }
     }
 
+    /**
+     * Opens a new window for the viualization.
+     */
+    @FXML
+    private void showVisualizationAction(ActionEvent event) {
+        if (dpData.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("No model loaded.");
+            alert.show();
+            return;
+        }
+
+        if (Integer.parseInt(dpData.getDimension()) > 2) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Visualization works only with 1-D & 2-D models.");
+            alert.show();
+            return;
+        }
+
+        if (!dpDone) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Run the program first.");
+            alert.show();
+            return;
+        }
+
+        try {
+            dpsolver.DpSover.newWindow(dpData, DynamicProgram.getLog(), DynamicProgram.getHierarchy());
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
+    }
+
+    /**
+     * Adds two new input fields for a new branch with text.
+     *
+     * @param branchText branch formula
+     * @param criteriaText criteria formula
+     */
     private void addFormulaInputRow(String branchText, String criteriaText) {
         List children = formulaInputGridPane.getChildren();
         int numChildren = children.size();
-        
+
         TextField branchTextField = new TextField();
         branchTextField.setFont(Font.font("monospace"));
         branchTextField.setPrefColumnCount(25);
@@ -178,6 +244,9 @@ public class DpSolverController implements Initializable {
         ++numRows;
     }
 
+    /**
+     * Reads all input fields and creates a DpData object.
+     */
     private void loadInputData() {
         List<String> branches = new ArrayList<>();
         List<String> criterias = new ArrayList<>();
@@ -187,7 +256,7 @@ public class DpSolverController implements Initializable {
             branches.add(((TextField) children.get(i)).getText().trim());
             criterias.add(((TextField) children.get(i + 1)).getText().trim());
         }
-        
+
         dpData.setBranches(branches)
                 .setCriterias(criterias)
                 .setDimension(dimensionTextField.getText().trim())
@@ -196,6 +265,9 @@ public class DpSolverController implements Initializable {
                 .setVariables(variablesTextArea.getText().trim().split("\n"));
     }
 
+    /**
+     * Reads all data from a DpData object and fills the input fields with it.
+     */
     private void updateInputFields() {
         dimensionTextField.setText(dpData.getDimension());
         startIndexesTextField.setText(dpData.getStartIndexes());
@@ -206,7 +278,7 @@ public class DpSolverController implements Initializable {
         String[] variables = dpData.getVariables();
 
         int textFieldIndex = 2;
-        
+
         for (int i = 0; i < branches.size(); ++i) {
             if (textFieldIndex < formulaInputGridPane.getChildren().size()) {
                 ((TextField) formulaInputGridPane.getChildren().get(textFieldIndex)).setText(branches.get(i));
@@ -225,38 +297,65 @@ public class DpSolverController implements Initializable {
             variablesTextArea.appendText("\n");
         }
     }
-    
+
+    /**
+     * Clears all input fields and resets the UI.
+     */
     private void resetInputFields() {
         dimensionTextField.clear();
         startIndexesTextField.clear();
         targetvariableTextField.clear();
         variablesTextArea.clear();
+        resultTextField.clear();
 
         List children = formulaInputGridPane.getChildren();
-        while (children.size() > 4){
+        while (children.size() > 4) {
             children.remove(children.size() - 1);
             children.remove(children.size() - 1);
         }
-        
+
         ((TextField) children.get(children.size() - 1)).clear();
         ((TextField) children.get(children.size() - 2)).clear();
     }
 
+    /**
+     * Updates the status bar text.
+     *
+     * @param text status text
+     */
     private void updateStatus(String text) {
         statusBarText.setText(text);
     }
 
+    /**
+     * Initializes the keyboard shortcuts for the buttons.
+     */
     public void initializeAccelerators() {
-        System.out.println(addBranchButton);
-        System.out.println(addBranchButton.getScene());
-        System.out.println(addBranchButton.getScene().getAccelerators());
         addBranchButton.getScene().getAccelerators()
-            .put(new KeyCodeCombination(KeyCode.A, KeyCombination.ALT_DOWN),
-                    new Runnable() {
-                @Override
-                public void run() {
-                    addFormulaInputRow(EMPTY, EMPTY);
-                }
-            });
+                .put(new KeyCodeCombination(KeyCode.A, KeyCombination.ALT_DOWN),
+                        new Runnable() {
+                    @Override
+                    public void run() {
+                        addFormulaInputRow(EMPTY, EMPTY);
+                    }
+                });
+
+        removeBranchButton.getScene().getAccelerators()
+                .put(new KeyCodeCombination(KeyCode.R, KeyCombination.ALT_DOWN),
+                        new Runnable() {
+                    @Override
+                    public void run() {
+                        removeBranchAction(null);
+                    }
+                });
+
+        showVisualizationButton.getScene().getAccelerators()
+                .put(new KeyCodeCombination(KeyCode.V, KeyCombination.ALT_DOWN),
+                        new Runnable() {
+                    @Override
+                    public void run() {
+                        showVisualizationAction(null);
+                    }
+                });
     }
 }

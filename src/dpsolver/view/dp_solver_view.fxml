@@ -1,13 +1,26 @@
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.geometry.*?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml" 
-          fx:controller="dpsolver.controller.DpSolverController">
+          fx:controller="dpsolver.controller.DpSolverController"
+          styleClass="root" 
+          prefWidth="800" 
+          prefHeight="450">
+    
+    <stylesheets>
+        <URL value="@dp_solver_style.css"/>
+    </stylesheets>
+    
     <columnConstraints>
         <ColumnConstraints percentWidth="100" />
     </columnConstraints>
+    
     <rowConstraints>
         <RowConstraints percentHeight="5" />
         <RowConstraints percentHeight="90" />
@@ -18,34 +31,37 @@
         <menus>
             <Menu text="File">
                 <items>	
-                    <MenuItem text="New model"
-                              onAction="#newAction">
+                    
+                    <MenuItem text="New model" onAction="#newAction">
                         <accelerator>
                             <KeyCodeCombination alt="ANY" code="N" control="DOWN" shift="ANY" meta="ANY" shortcut="ANY"/>     
                         </accelerator>
                     </MenuItem>
-                    <MenuItem text="Load model"
-                              onAction="#openAction">
+                    
+                    <MenuItem text="Load model" onAction="#openAction">
                         <accelerator>
                             <KeyCodeCombination alt="ANY" code="O" control="DOWN" shift="ANY" meta="ANY" shortcut="ANY"/>     
                         </accelerator>
                     </MenuItem>
-                    <MenuItem text="Save model"
-                              onAction="#saveAction">
+                    
+                    <MenuItem text="Save model" onAction="#saveAction">
                         <accelerator>
                             <KeyCodeCombination alt="ANY" code="S" control="DOWN" shift="ANY" meta="ANY" shortcut="ANY"/>     
                         </accelerator>
                     </MenuItem>
+                    
                 </items>
             </Menu>
+            
             <Menu text="Run">
                 <items>
-                    <MenuItem text="Run model"
-                              onAction="#runAction">
+                    
+                    <MenuItem text="Run model" onAction="#runAction">
                         <accelerator>
                             <KeyCodeCombination alt="ANY" code="R" control="DOWN" shift="ANY" meta="ANY" shortcut="ANY"/>     
                         </accelerator>
                     </MenuItem>
+                    
                 </items>
             </Menu>
         </menus>
@@ -54,20 +70,33 @@
     <ScrollPane id="inputPane" 
                 GridPane.rowIndex="1" GridPane.columnIndex="0" 
                 fitToWidth="true" fitToHeight="true">
-        <HBox alignment="CENTER" 
-              minWidth="${inputPane.viewportBounds.width}" 
-              minHeight="${inputPane.viewportBounds.height}" >
+        
+        <GridPane alignment="CENTER" >
+            
             <padding>
                 <Insets top="15" right="15" bottom="15" left="15"/>
             </padding>
             
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/> 
+                <ColumnConstraints percentWidth="50"/> 
+            </columnConstraints>
+            
             <children>
+                
                 <GridPane fx:id="formulaInputGridPane"
+                          GridPane.columnIndex="0"
                           hgap="30" vgap="10"
-                          alignment="CENTER">
+                          alignment="CENTER" >
+                    
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15"/>
                     </padding>
+                    
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50"/> 
+                        <ColumnConstraints percentWidth="50"/> 
+                    </columnConstraints>
 
                     <Label styleClass="title"
                            text="Branch"
@@ -78,12 +107,21 @@
                            text="Criteria"
                            GridPane.columnIndex="1"
                            GridPane.rowIndex="0"/>
+                    
                 </GridPane>
 
-                <GridPane hgap="30" vgap="10" alignment="CENTER" >
+                <GridPane GridPane.columnIndex="1" 
+                          hgap="30" vgap="10" 
+                          alignment="CENTER" >
+                    
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15"/>
                     </padding>
+                    
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50"/> 
+                        <ColumnConstraints percentWidth="50"/> 
+                    </columnConstraints>
 
                     <Label styleClass="title"
                            text="Target variable"
@@ -147,11 +185,20 @@
                             text="Remove branch"
                             onAction="#removeBranchAction"
                             GridPane.rowIndex="7"
-                            GridPane.columnIndex="1"/>
+                            GridPane.columnIndex="1"
+                            GridPane.halignment="RIGHT"/>
+
+                    <Button fx:id="showVisualizationButton"
+                            text="Show Visualization"
+                            onAction="#showVisualizationAction"
+                            GridPane.rowIndex="8"
+                            GridPane.columnSpan="2" 
+                            GridPane.halignment="CENTER"  />
                 </GridPane>
             </children>
-        </HBox>
+        </GridPane>
     </ScrollPane>
     
     <Label fx:id="statusBarText" GridPane.rowIndex="2" GridPane.columnIndex="0"/> 
+    
 </GridPane>
