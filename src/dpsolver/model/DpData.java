@@ -36,6 +36,7 @@ public class DpData {
 
     /**
      * Returns the list of branches.
+     *
      * @return list of branches
      */
     public List<String> getBranches() {
@@ -44,6 +45,7 @@ public class DpData {
 
     /**
      * Returns the list of criterias.
+     *
      * @return list of criterias
      */
     public List<String> getCriterias() {
@@ -52,6 +54,7 @@ public class DpData {
 
     /**
      * Returns the array of variables.
+     *
      * @return array of variables
      */
     public String[] getVariables() {
@@ -60,6 +63,7 @@ public class DpData {
 
     /**
      * Returns the target variable.
+     *
      * @return the target variable
      */
     public String getTargetVariable() {
@@ -68,6 +72,7 @@ public class DpData {
 
     /**
      * Returns the dimension
+     *
      * @return the dimension
      */
     public String getDimension() {
@@ -76,6 +81,7 @@ public class DpData {
 
     /**
      * Returns the start indexes
+     *
      * @return the start indexes
      */
     public String getStartIndexes() {
@@ -126,6 +132,7 @@ public class DpData {
 
     /**
      * Returns the array of start indexes
+     *
      * @return array of start indexes
      */
     public int[] getStartIndexesArray() {
@@ -141,7 +148,8 @@ public class DpData {
 
     /**
      * Check if all fields are empty.
-     * @return 
+     *
+     * @return
      */
     public boolean isEmpty() {
         return mBranches == null
@@ -181,23 +189,23 @@ public class DpData {
 
         return string;
     }
-    
+
     @Override
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         if (this == object) {
             return true;
         }
-        
+
         if (object == null) {
             return false;
         }
-        
-        if (this.getClass() != object.getClass()){
+
+        if (this.getClass() != object.getClass()) {
             return false;
         }
-        
+
         DpData dpData = (DpData) object;
-        
+
         return this.mBranches.equals(dpData.mBranches)
                 && this.mCriterias.equals(dpData.mCriterias)
                 && Arrays.equals(this.mVariables, dpData.mVariables)

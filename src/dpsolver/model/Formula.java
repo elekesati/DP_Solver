@@ -21,7 +21,7 @@ public class Formula {
     private static final String EXCEPTION_MESSAGE = "Input formula can have only one else branch.";
     private final List<Branch> mBranches;
     private boolean mHasElseBranch = false;
-    private byte mElseBranchPosition; 
+    private byte mElseBranchPosition;
 
     /**
      * Constructor
@@ -37,43 +37,39 @@ public class Formula {
      * @param criteria the criteria which defines when to use this branch
      */
     public void addBranch(String branch, String criteria) throws IllegalArgumentException {
-        
-        if (criteria.equals(ELSE)){
-            if (mHasElseBranch){
+
+        if (criteria.equals(ELSE)) {
+            if (mHasElseBranch) {
                 throw new IllegalArgumentException(EXCEPTION_MESSAGE);
-            }
-            else{
+            } else {
                 mHasElseBranch = true;
                 mElseBranchPosition = (byte) mBranches.size();
                 criteria = "1";
             }
         }
-        
-        if (mHasElseBranch){
+
+        if (mHasElseBranch) {
             mBranches.add(mElseBranchPosition, new Branch(branch, criteria));
-        }
-        else{
+        } else {
             mBranches.add(new Branch(branch, criteria));
         }
     }
 
     public void addBranch(Pair<String, String> branch) throws IllegalArgumentException {
-        
-        if (branch.getValue().equals(ELSE)){
-            if (mHasElseBranch){
+
+        if (branch.getValue().equals(ELSE)) {
+            if (mHasElseBranch) {
                 throw new IllegalArgumentException(EXCEPTION_MESSAGE);
-            }
-            else{
+            } else {
                 mHasElseBranch = true;
                 mElseBranchPosition = (byte) mBranches.size();
                 branch = new Pair<>(branch.getKey(), "1");
             }
         }
-        
-        if (mHasElseBranch){
+
+        if (mHasElseBranch) {
             mBranches.add(mElseBranchPosition, new Branch(branch));
-        }
-        else{
+        } else {
             mBranches.add(new Branch(branch));
         }
     }

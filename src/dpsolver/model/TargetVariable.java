@@ -37,20 +37,20 @@ public class TargetVariable extends Variable {
         int index = DimensionConverter.multiDimensonalToLinear(mBounds, indexes);
         this.mStatus.set(index, status);
     }
-    
-    public void clearStatus(){
-        for (int i=0; i<mStatus.size(); ++i){
+
+    public void clearStatus() {
+        for (int i = 0; i < mStatus.size(); ++i) {
             mStatus.set(i, WHITE);
         }
     }
-    
-    public void clearValues(){
-        for (int i=0; i<mValues.size(); ++i){
+
+    public void clearValues() {
+        for (int i = 0; i < mValues.size(); ++i) {
             mValues.set(i, Double.NaN);
         }
     }
-    
-    public void clear(){
+
+    public void clear() {
         clearStatus();
         clearValues();
     }

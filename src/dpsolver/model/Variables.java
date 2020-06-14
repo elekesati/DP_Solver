@@ -10,6 +10,8 @@ import dpsolver.helpers.DimensionConverter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Stores all variables in a map
@@ -28,8 +30,8 @@ public class Variables {
      */
     private Variables() {
     }
-    
-    public static void initialize(){
+
+    public static void initialize() {
         mScalars.put("inf", Double.POSITIVE_INFINITY);
     }
 
@@ -38,7 +40,7 @@ public class Variables {
      *
      * @param variables contains the variables and the values in string format
      */
-    public static void addVariables(String[] variables) {
+    public static void addVariables(String[] variables) throws Exception {
         for (String string : variables) {
             addVariable(string, false);
         }
@@ -50,7 +52,9 @@ public class Variables {
      * @param input contains the variable and the value in string format
      * @param isTarget flag for target variable
      */
-    public static void addVariable(String input, boolean isTarget) {
+    public static void addVariable(String input, boolean isTarget) throws Exception {
+        checkVariableInput(input);
+
         int equationSignIndex = input.indexOf('=');
         String variable = input;
         String value = "";
@@ -132,15 +136,13 @@ public class Variables {
             dimensionLimits[i] = Integer.parseInt(dimensionLimitsString[i]);
         }
 
-        if (isTarget){
+        if (isTarget) {
             mVectors.put(variableName, new TargetVariable(variableName, dimensionLimits));
             mTargetVariable = variableName;
-        }
-        else{
+        } else {
             mVectors.put(variableName, new Variable(variableName, dimensionLimits));
         }
-        
-        
+
         AdditionalFunctions.addFunction(variableName, dimensionLimits.length, isTarget);
 
         if (!value.isEmpty()) {
@@ -154,6 +156,67 @@ public class Variables {
                 mVectors.get(variableName).setValue(Double.NaN, i);
             }
         }
+    }
+
+    /**
+     * Check if the declaration of the variable is correct.
+     *
+     * @param input the variable
+     * @throws Exception specifies the error in the message
+     */
+    private static void checkVariableInput(String input) throws Exception {
+        String variable = input.replaceAll(" ", "");
+
+        if (!variable.replaceAll("[a-zA-Z0-9_,.{}()=]", "").trim().isEmpty()) {
+            throw new IllegalArgumentException("Illegal characters in string: " + input);
+        }
+
+        if (variable.endsWith("=")) {
+            throw new IllegalArgumentException("Assigned value is missing: " + input);
+        }
+
+        String roundBrackets = variable.replaceAll("[^()]", "").trim();
+
+        if (!(roundBrackets.equals("()") || roundBrackets.isEmpty())) {
+            throw new IllegalArgumentException("Parantheses mismatch: " + input);
+        }
+
+        String curlyBrackets = variable.replaceAll("[^{}]", "").trim();
+
+        if (!(curlyBrackets.equals("{}") || curlyBrackets.isEmpty())) {
+            throw new IllegalArgumentException("Parantheses mismatch: " + input);
+        }
+
+        String equationSign = variable.replaceAll("[^=]", "").trim();
+
+        if (!(equationSign.equals("=") || equationSign.isEmpty())) {
+            throw new IllegalArgumentException("Equation sign mismatch: " + input);
+        }
+
+        Matcher matcher = Pattern.compile("(?<=\\()(.*?)(?=\\))").matcher(variable);
+
+        if (matcher.find()) {
+            if (!matcher.group().replaceAll(",", "").replaceAll("\\d", "").isEmpty()) {
+                throw new IllegalArgumentException("Illegal number format: " + input);
+            }
+
+            if (matcher.group().startsWith(",") || matcher.group().endsWith(",")) {
+                throw new IllegalArgumentException("Value missing: " + input);
+            }
+        }
+
+        matcher = Pattern.compile("(?<=\\{)(.*?)(?=\\})").matcher(variable);
+
+        if (matcher.find()) {
+            if (!matcher.group().replaceAll(",", "").replaceAll("\\d", "").isEmpty()) {
+                throw new IllegalArgumentException("Illegal number format: " + input);
+            }
+
+            if (matcher.group().startsWith(",") || matcher.group().endsWith(",")) {
+                throw new IllegalArgumentException("Value missing: " + input);
+            }
+        }
+
     }
 
     /**

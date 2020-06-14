@@ -49,7 +49,7 @@ import javafx.stage.WindowEvent;
  * @author Elekes Attila
  */
 public class VisualizationController implements Initializable {
-    
+
     private static final String PLAY = "Playing...";
     private static final String PAUSE = "Paused.";
     private static final String STOP = "Stopped.";
@@ -106,7 +106,7 @@ public class VisualizationController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         updateStatus(STOP);
-        
+
         grayBackground = new Background(new BackgroundFill(Color.GRAY, CornerRadii.EMPTY, Insets.EMPTY));
         lightGrayBackground = new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY));
         darkGrayBackground = new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY));
@@ -221,6 +221,7 @@ public class VisualizationController implements Initializable {
 
     /**
      * Calculates the size of the cells.
+     *
      * @param bounds number of cells in each direction
      */
     private void setCellSize(int... bounds) {
@@ -238,6 +239,7 @@ public class VisualizationController implements Initializable {
 
     /**
      * Initializes the cells.
+     *
      * @param bounds number of cells in each direction
      */
     private void createCells(int... bounds) {
@@ -258,6 +260,7 @@ public class VisualizationController implements Initializable {
 
     /**
      * Creates the row and column headers.
+     *
      * @param bounds number of cells in each direction
      */
     private void setHeaders(int... bounds) {
@@ -270,11 +273,11 @@ public class VisualizationController implements Initializable {
                 int rowIndex = GridPane.getRowIndex(cell);
                 int columnIndex = GridPane.getColumnIndex(cell);
 
-                if (rowIndex == 0 || columnIndex == 0){
+                if (rowIndex == 0 || columnIndex == 0) {
                     cell.setBackground(transparentBackground);
                     cell.setBorder(noBorder);
                 }
-                
+
                 if (rowIndex == 0 && columnIndex == 0) {
                     ((Text) cell.getChildren().get(0)).setText("");
                 }
@@ -292,12 +295,13 @@ public class VisualizationController implements Initializable {
 
     /**
      * Returns the cell in a specified index.
+     *
      * @param index index of the cell
      * @return the cell
      */
     private StackPane getCell(int... index) {
         index = convertToCellIndex(index);
-        
+
         List<Node> children = space.getChildren();
 
         for (Node child : children) {
@@ -315,11 +319,12 @@ public class VisualizationController implements Initializable {
 
     /**
      * Marks the specified cell as current cell.
+     *
      * @param cell the cell
      */
     private void markAsCurrent(StackPane cell) {
         cell.setBorder(boldSolidBorder);
-        
+
         if (cell.getBackground().equals(whiteBackground)) {
             mLog.get(actualIndex).setFirstUse();
             cell.setBackground(grayBackground);
@@ -328,14 +333,14 @@ public class VisualizationController implements Initializable {
 
     /**
      * Unmarks the specified cell as current cell.
+     *
      * @param cell the cell
      */
     private void unmarkAsCurrent(StackPane cell) {
-        
-        if (cell.getBackground().equals(greenBackground)){
+
+        if (cell.getBackground().equals(greenBackground)) {
             cell.setBorder(solidBorder);
-        }
-        else{
+        } else {
             cell.setBackground(lightGrayBackground);
             cell.setBorder(dottedBorder);
         }
@@ -367,8 +372,7 @@ public class VisualizationController implements Initializable {
                 StackPane child = getCell(childIndex);
                 if (child.getBackground().equals(greenBackground)) {
                     child.setBorder(solidBorder);
-                }
-                else{
+                } else {
                     child.setBorder(dottedBorder);
                 }
             }
@@ -377,6 +381,7 @@ public class VisualizationController implements Initializable {
 
     /**
      * Sets the value of the specicied cell and marks it as closed.
+     *
      * @param cell the cell
      * @param result the cell's value
      */
@@ -389,6 +394,7 @@ public class VisualizationController implements Initializable {
 
     /**
      * Sets the value of the specicied cell to NaN and unmarks it as closed.
+     *
      * @param cell the cell
      */
     private void unmarkAsClosed(StackPane cell) {
@@ -399,6 +405,7 @@ public class VisualizationController implements Initializable {
 
     /**
      * Resets the specicied cell's state to the default
+     *
      * @param cell the cell
      */
     private void unmark(StackPane cell) {
@@ -408,8 +415,9 @@ public class VisualizationController implements Initializable {
     }
 
     /**
-     * Steps forward one step. Marks the nextCell as current and unmarks the 
+     * Steps forward one step. Marks the nextCell as current and unmarks the
      * actualCell as current.
+     *
      * @param actualCell current cell
      * @param nextCell next cell
      */
@@ -422,9 +430,9 @@ public class VisualizationController implements Initializable {
                 markAsClosed(actualCell, mLog.get(actualIndex).getDescription());
             }
         }
-        
+
         ++actualIndex;
-        
+
         if (nextCell != null) {
             markChildren();
             markAsCurrent(nextCell);
@@ -436,8 +444,9 @@ public class VisualizationController implements Initializable {
     }
 
     /**
-     * Steps beckward one step. Marks the previousCell as current and unmarks the 
-     * actualCell as current.
+     * Steps beckward one step. Marks the previousCell as current and unmarks
+     * the actualCell as current.
+     *
      * @param actualCell current cell
      * @param previousCell previous cell
      */
@@ -445,7 +454,7 @@ public class VisualizationController implements Initializable {
 
         if (actualCell != null) {
             unmarkAsCurrent(actualCell);
-            
+
             if (mLog.get(actualIndex).isClosed()) {
                 unmarkAsClosed(actualCell);
             }
@@ -466,7 +475,7 @@ public class VisualizationController implements Initializable {
     }
 
     /**
-     * Starts the visualization if it has has been stopped, resumes the 
+     * Starts the visualization if it has has been stopped, resumes the
      * visualization if it hs been paused, or restarts the visualization if it
      * is already started.
      */
@@ -477,17 +486,17 @@ public class VisualizationController implements Initializable {
             resetVisualization();
             updateStatus(PAUSE);
         }
-        
+
         updateStatus(PLAY);
         playing = true;
         mTimer = new Timer();
-        
+
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
                 StackPane actualCell;
                 StackPane nextCell;
-                
+
                 try {
                     actualCell = getCell(mLog.get(actualIndex).getIndexes());
                 } catch (IndexOutOfBoundsException e) {
@@ -503,7 +512,7 @@ public class VisualizationController implements Initializable {
                 nextStep(actualCell, nextCell);
             }
         };
-        
+
         mTimer.scheduleAtFixedRate(mTimerTask, 0, 500);
     }
 
@@ -517,13 +526,13 @@ public class VisualizationController implements Initializable {
             updateStatus(PAUSE);
         }
     }
-    
+
     /**
      * Updates the status bar text.
      *
      * @param text status text
      */
-        private void updateStatus(String text) {
+    private void updateStatus(String text) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -531,22 +540,22 @@ public class VisualizationController implements Initializable {
             }
         });
     }
-        
-    public int[] convertToCellIndex(int... index){
-        if (index.length == 1){
-            return new int[] {0, index[0]};
+
+    public int[] convertToCellIndex(int... index) {
+        if (index.length == 1) {
+            return new int[]{0, index[0]};
         }
-        
+
         return index;
     }
 
     /**
-     * Initializes the visualization: sets up the cell sizes, creates them and 
+     * Initializes the visualization: sets up the cell sizes, creates them and
      * sets up the headers.
      */
     public void prepareVisualization() {
         int[] bounds = convertToCellIndex(mDpData.getStartIndexesArray());
-        
+
         setCellSize(bounds);
         createCells(bounds);
         setHeaders(bounds);
@@ -554,6 +563,7 @@ public class VisualizationController implements Initializable {
 
     /**
      * Loades the data for he visualization.
+     *
      * @param dpData DpData of the model
      * @param log sequence of the steps and log of the errors
      * @param hierarchy parent-child relations between the nodes
@@ -566,13 +576,14 @@ public class VisualizationController implements Initializable {
 
     /**
      * Sets the stage of the visualization.
+     *
      * @param visualizationStage the stage
      */
     public void setStage(Stage visualizationStage) {
         this.mStage = visualizationStage;
     }
-    
-    public void setStageProperties(){
+
+    public void setStageProperties() {
         mStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {

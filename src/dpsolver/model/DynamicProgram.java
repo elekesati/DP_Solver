@@ -35,7 +35,7 @@ public class DynamicProgram {
      *
      * @param data
      */
-    public static void load(DpData data) {
+    public static void load(DpData data) throws Exception {
         List<String> branchList = data.getBranches();
         List<String> criteriaList = data.getCriterias();
         String[] branchArray = new String[branchList.size()];
@@ -46,7 +46,7 @@ public class DynamicProgram {
             criteriaArray[i] = criteriaList.get(i);
         }
 
-        if (data.getVariables().length != 0){
+        if (data.getVariables().length != 0) {
             Variables.addVariables(data.getVariables());
         }
         Variables.addVariable(data.getTargetVariable(), true);
@@ -169,6 +169,7 @@ public class DynamicProgram {
 
     /**
      * Returns the steps of the recursive calls.
+     *
      * @return log of the steps
      */
     public static List<DpLog> getLog() {
@@ -177,6 +178,7 @@ public class DynamicProgram {
 
     /**
      * Returns the parent-children relations defined by the recursive calls.
+     *
      * @return the parent-children relations
      */
     public static Map<String, HashSet<int[]>> getHierarchy() {

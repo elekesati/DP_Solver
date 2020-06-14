@@ -46,7 +46,7 @@ public class AdditionalFunctions {
                 return args[1];
             }
         });
-        
+
         mFunctions.add(new Function("avg", 2) {
             @Override
             public double apply(double... args) {

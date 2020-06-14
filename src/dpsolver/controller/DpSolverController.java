@@ -33,6 +33,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import net.objecthunter.exp4j.tokenizer.UnknownFunctionOrVariableException;
 
 /**
  * FXML Controller class
@@ -45,17 +46,17 @@ public class DpSolverController implements Initializable {
     private static final int NO = 1;
     private static final int CANCEL_OPERATION = 2;
     private static final int ESC_FROM_DIALOG = 3;
-    
+
     private static final String START = "Starting.";
     private static final String LOAD = "Loading model.";
     private static final String SAVE = "Saving model.";
     private static final String CREATE = "Creating model.";
     private static final String RUN = "Run.";
     private static final String DONE = "Done.";
-    private static final String INPUT_ERROR = "Input error: ";
+    private static final String INPUT_ERROR = "Input error - ";
     private static final String CANCEL = "Canceled.";
     private static final String EMPTY = "";
-    
+
     private static final String UNSAVED_CHANGES_TITLE = "There are unsaved changes";
     private static final String UNSAVED_CHANGES_QUESTION = "Do you want to save changes?";
     private static final String NOT_EMPTY_BRANCH_TITLE = "Input fields are not empty";
@@ -85,7 +86,7 @@ public class DpSolverController implements Initializable {
     private TextArea variablesTextArea;
 
     private Stage mStage;
-    
+
     private int numRows = 1;
     private DpData dpData;
     private boolean dpDone = false;
@@ -109,9 +110,9 @@ public class DpSolverController implements Initializable {
      */
     @FXML
     private void newAction(ActionEvent event) {
-        
-        if (hasUnsavedChanges()){
-            switch (showConfirmDialog(UNSAVED_CHANGES_TITLE, UNSAVED_CHANGES_QUESTION, true)){
+
+        if (hasUnsavedChanges()) {
+            switch (showConfirmDialog(UNSAVED_CHANGES_TITLE, UNSAVED_CHANGES_QUESTION, true)) {
                 case CANCEL_OPERATION:
                     return;
 
@@ -126,11 +127,11 @@ public class DpSolverController implements Initializable {
                     return;
             }
         }
-        
-        if (statusBarText.getText().equals(CANCEL)){
+
+        if (statusBarText.getText().equals(CANCEL)) {
             return;
         }
-        
+
         try {
             updateStatus(CREATE);
             DpSover.setFileName("Untitled");
@@ -151,9 +152,9 @@ public class DpSolverController implements Initializable {
      */
     @FXML
     private void openAction(ActionEvent event) {
-        
-        if (hasUnsavedChanges()){
-            switch (showConfirmDialog(UNSAVED_CHANGES_TITLE, UNSAVED_CHANGES_QUESTION, true)){
+
+        if (hasUnsavedChanges()) {
+            switch (showConfirmDialog(UNSAVED_CHANGES_TITLE, UNSAVED_CHANGES_QUESTION, true)) {
                 case CANCEL_OPERATION:
                     return;
 
@@ -168,11 +169,11 @@ public class DpSolverController implements Initializable {
                     return;
             }
         }
-        
-        if (statusBarText.getText().equals(CANCEL)){
+
+        if (statusBarText.getText().equals(CANCEL)) {
             return;
         }
-        
+
         try {
             updateStatus(LOAD);
             model = DpSover.openFile();
@@ -191,18 +192,18 @@ public class DpSolverController implements Initializable {
     }
 
     /**
-     * Saves a model to a new file, or updates the file if the model was 
+     * Saves a model to a new file, or updates the file if the model was
      * previously loaded.
      */
     @FXML
     private void saveAction(ActionEvent event) {
         try {
             updateStatus(SAVE);
-            
-            if (model == null){
+
+            if (model == null) {
                 model = DpSover.saveFile();
             }
-            
+
             dpData = loadInputData();
             FileHandler.write(model, dpData);
             DpSover.setFileName(model.getName());
@@ -213,8 +214,7 @@ public class DpSolverController implements Initializable {
             updateStatus(ex.getMessage());
         }
     }
-    
-    
+
     /**
      * Saves a model to a new file.
      */
@@ -243,14 +243,20 @@ public class DpSolverController implements Initializable {
         dpDone = false;
         try {
             updateStatus(RUN);
+            resultTextField.clear();
+            checkDimensionAndStartIndexInputs();
             DpData data = loadInputData();
             DynamicProgram.load(data);
             resultTextField.setText(DynamicProgram.solve(data.getStartIndexesArray()).toString());
             updateStatus(DONE);
         } catch (NumberFormatException ex) {
             updateStatus(INPUT_ERROR + ex.getMessage() + ".");
+        } catch (UnknownFunctionOrVariableException ex) {
+            updateStatus(INPUT_ERROR + " " + ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            updateStatus(INPUT_ERROR + " " + ex.getMessage());
         } catch (Exception ex) {
-            updateStatus(ex.toString() + " " + ex.getMessage());
+            updateStatus(ex.getMessage());
         } finally {
             dpDone = true;
         }
@@ -270,21 +276,21 @@ public class DpSolverController implements Initializable {
     @FXML
     private void removeBranchAction(ActionEvent event) {
         List children = formulaInputGridPane.getChildren();
-        
+
         if (children.size() > 4) {
             TextField branch = (TextField) children.get(children.size() - 2);
             TextField criteria = (TextField) children.get(children.size() - 1);
-            
-            if (!branch.getText().isEmpty() || !criteria.getText().isEmpty()){
-                switch (showConfirmDialog(NOT_EMPTY_BRANCH_TITLE, NOT_EMPTY_BRANCH_QUESTION, false)){
+
+            if (!branch.getText().isEmpty() || !criteria.getText().isEmpty()) {
+                switch (showConfirmDialog(NOT_EMPTY_BRANCH_TITLE, NOT_EMPTY_BRANCH_QUESTION, false)) {
                     case YES:
                         break;
-                        
+
                     default:
                         return;
                 }
             }
-            
+
             children.remove(children.size() - 1);
             children.remove(children.size() - 1);
             --numRows;
@@ -327,15 +333,15 @@ public class DpSolverController implements Initializable {
             System.out.println(ex.toString());
         }
     }
-    
+
     /**
-    * Switches to full screen and back.
-    */
+     * Switches to full screen and back.
+     */
     @FXML
     private void fullScreenAction(ActionEvent event) {
-       this.mStage.setFullScreen(!this.mStage.isFullScreen());
+        this.mStage.setFullScreen(!this.mStage.isFullScreen());
     }
-    
+
     /**
      * Adds two new input fields for a new branch with text.
      *
@@ -373,7 +379,7 @@ public class DpSolverController implements Initializable {
             branches.add(((TextField) children.get(i)).getText().trim());
             criterias.add(((TextField) children.get(i + 1)).getText().trim());
         }
-        
+
         return new DpData()
                 .setBranches(branches)
                 .setCriterias(criterias)
@@ -381,6 +387,36 @@ public class DpSolverController implements Initializable {
                 .setStartIndexes(startIndexesTextField.getText().trim())
                 .setTargetVariable(targetvariableTextField.getText().trim())
                 .setVariables(variablesTextArea.getText().trim().split("\n"));
+    }
+
+    /**
+     * Checks if the inputs in the dimension and start indexes fields are
+     * correct.
+     *
+     * @throws Exception specifies the error in the message
+     */
+    private void checkDimensionAndStartIndexInputs() throws Exception {
+        String dimensionFieldText = dimensionTextField.getText();
+
+        if (!dimensionFieldText.replaceAll("[0-9]", "").trim().isEmpty()) {
+            throw new IllegalArgumentException("Illegal characters in Dimension field.");
+        }
+
+        String startndexesFieldText = startIndexesTextField.getText();
+
+        if (!startndexesFieldText.replaceAll("[0-9,]", "").trim().isEmpty()) {
+            throw new IllegalArgumentException("Illegal characters in Start Indexes field.");
+        }
+
+        if (startndexesFieldText.replaceAll("[^,]", "").trim().length() != Integer.parseInt(dimensionFieldText) - 1) {
+            throw new IllegalArgumentException("Illegal input.");
+        }
+
+        if (startndexesFieldText.split(",").length != Integer.parseInt(dimensionFieldText)) {
+            throw new IllegalArgumentException("Start Indexes field must contain "
+                    + dimensionFieldText + " indexes.");
+        }
+
     }
 
     /**
@@ -445,74 +481,76 @@ public class DpSolverController implements Initializable {
     private void updateStatus(String text) {
         statusBarText.setText(text);
     }
-    
+
     /**
      * Checks if the input data has been changed after the last save.
+     *
      * @return true, if the input data has been changed, false otherwise
      */
-    private boolean hasUnsavedChanges(){
+    private boolean hasUnsavedChanges() {
         return !loadInputData().equals(dpData);
     }
-    
+
     /**
-     * Shows a confirmation type alert dialog with the specified title and 
+     * Shows a confirmation type alert dialog with the specified title and
      * content.
+     *
      * @param title title of the dialog
      * @param question content of the dialog
      * @param cancelable true if the dialog should contain cancel button
      * @return the user's choice
      */
-    private int showConfirmDialog(String title, String question, boolean cancelable){
-        
+    private int showConfirmDialog(String title, String question, boolean cancelable) {
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
         alert.setContentText(question);
         alert.getButtonTypes().clear();
-        if (cancelable){
+        if (cancelable) {
             alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
-        }
-        else{
+        } else {
             alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
         }
-        
+
         Optional<ButtonType> choise = alert.showAndWait();
-        
-        if (choise.isPresent()){
-            if (choise.get() == ButtonType.YES){
+
+        if (choise.isPresent()) {
+            if (choise.get() == ButtonType.YES) {
                 return YES;
             }
-            if (choise.get() == ButtonType.NO){
+            if (choise.get() == ButtonType.NO) {
                 return NO;
             }
-            if (choise.get() == ButtonType.CANCEL){
+            if (choise.get() == ButtonType.CANCEL) {
                 return CANCEL_OPERATION;
             }
         }
-        
+
         return ESC_FROM_DIALOG;
     }
-    
+
     /**
      * Sets the stage of the visualization.
+     *
      * @param visualizationStage the stage
      */
     public void setStage(Stage visualizationStage) {
         this.mStage = visualizationStage;
     }
-    
-    public void setStageProperties(){
+
+    public void setStageProperties() {
         mStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                if (hasUnsavedChanges()){
-                    switch (showConfirmDialog(UNSAVED_CHANGES_TITLE, UNSAVED_CHANGES_QUESTION, true)){
+                if (hasUnsavedChanges()) {
+                    switch (showConfirmDialog(UNSAVED_CHANGES_TITLE, UNSAVED_CHANGES_QUESTION, true)) {
                         case CANCEL_OPERATION:
                             event.consume();
                             break;
 
                         case YES:
                             saveAction(null);
-                            if (statusBarText.getText().equals(CANCEL)){
+                            if (statusBarText.getText().equals(CANCEL)) {
                                 event.consume();
                                 break;
                             }
@@ -565,7 +603,7 @@ public class DpSolverController implements Initializable {
                         showVisualizationAction(null);
                     }
                 });
-        
+
         fullScreenButton.getScene().getAccelerators()
                 .put(new KeyCodeCombination(KeyCode.F11),
                         new Runnable() {

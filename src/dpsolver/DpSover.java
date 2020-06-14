@@ -53,10 +53,11 @@ public class DpSover extends Application {
 
     /**
      * Creates new window for the visualization.
+     *
      * @param dpData DpData of the model
      * @param log sequence of the steps and log of the errors
      * @param hierarchy parent-child relations between the nodes
-     * @throws Exception 
+     * @throws Exception
      */
     public static void newWindow(DpData dpData, List<DpLog> log, Map<String, HashSet<int[]>> hierarchy)
             throws Exception {
@@ -81,6 +82,7 @@ public class DpSover extends Application {
 
     /**
      * Shows a file chooser window for opening a model.
+     *
      * @return selected file
      */
     public static File openFile() {
@@ -98,6 +100,7 @@ public class DpSover extends Application {
 
     /**
      * Shows a file chooser window for saving a model.
+     *
      * @return selected file
      */
     public static File saveFile() {
@@ -115,18 +118,19 @@ public class DpSover extends Application {
 
     /**
      * Updates the title of the window with the name of the opened file
+     *
      * @param fileName name of the opened file
      */
     public static void setFileName(String fileName) {
         mainStage.setTitle("DP-Solver - " + fileName);
     }
-    
+
     /**
      * Stops all background tasks and closes all windows.
      */
-    public static void closeAll(){
-        if (visualizationStage != null){
-            if (visualizationStage.isShowing()){
+    public static void closeAll() {
+        if (visualizationStage != null) {
+            if (visualizationStage.isShowing()) {
                 //visualizationStage.close();
                 visualizationStage.fireEvent(new WindowEvent(visualizationStage, WindowEvent.WINDOW_CLOSE_REQUEST));
             }
