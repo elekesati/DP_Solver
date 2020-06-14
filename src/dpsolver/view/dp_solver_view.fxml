@@ -50,6 +50,12 @@
                         </accelerator>
                     </MenuItem>
                     
+                    <MenuItem text="Save model as" onAction="#saveAsAction">
+                        <accelerator>
+                            <KeyCodeCombination alt="ANY" code="S" control="DOWN" shift="DOWN" meta="ANY" shortcut="ANY"/>     
+                        </accelerator>
+                    </MenuItem>
+                    
                 </items>
             </Menu>
             
@@ -78,8 +84,8 @@
             </padding>
             
             <columnConstraints>
-                <ColumnConstraints percentWidth="50"/> 
-                <ColumnConstraints percentWidth="50"/> 
+                <ColumnConstraints percentWidth="50" /> 
+                <ColumnConstraints percentWidth="50" /> 
             </columnConstraints>
             
             <children>
@@ -94,8 +100,8 @@
                     </padding>
                     
                     <columnConstraints>
-                        <ColumnConstraints percentWidth="50"/> 
-                        <ColumnConstraints percentWidth="50"/> 
+                        <ColumnConstraints percentWidth="50" /> 
+                        <ColumnConstraints percentWidth="50" /> 
                     </columnConstraints>
 
                     <Label styleClass="title"
@@ -112,15 +118,15 @@
 
                 <GridPane GridPane.columnIndex="1" 
                           hgap="30" vgap="10" 
-                          alignment="CENTER" >
+                          alignment="TOP_CENTER" >
                     
                     <padding>
                         <Insets top="15" right="15" bottom="15" left="15"/>
                     </padding>
                     
                     <columnConstraints>
-                        <ColumnConstraints percentWidth="50"/> 
-                        <ColumnConstraints percentWidth="50"/> 
+                        <ColumnConstraints percentWidth="50" /> 
+                        <ColumnConstraints percentWidth="50" /> 
                     </columnConstraints>
 
                     <Label styleClass="title"
@@ -173,11 +179,13 @@
                               GridPane.rowIndex="6"
                               GridPane.columnIndex="0"
                               GridPane.columnSpan="2" 
+                              wrapText="true" 
                               styleClass="input_field" />
 
                     <Button fx:id="addBranchButton"
                             text="Add branch"
                             onAction="#addBranchAction"
+                            maxWidth="Infinity" 
                             GridPane.rowIndex="7"
                             GridPane.columnIndex="0"/>
 
@@ -186,6 +194,7 @@
                             onAction="#removeBranchAction"
                             GridPane.rowIndex="7"
                             GridPane.columnIndex="1"
+                            maxWidth="Infinity" 
                             GridPane.halignment="RIGHT"/>
 
                     <Button fx:id="showVisualizationButton"
@@ -193,7 +202,16 @@
                             onAction="#showVisualizationAction"
                             GridPane.rowIndex="8"
                             GridPane.columnSpan="2" 
+                            maxWidth="Infinity" 
                             GridPane.halignment="CENTER"  />
+                    
+                    <Button text="Switch to Full Screen"
+                            onAction="#fullScreenAction"
+                            fx:id="fullScreenButton"
+                            GridPane.rowIndex="9"
+                            GridPane.columnSpan="2" 
+                            maxWidth="Infinity" 
+                            GridPane.halignment="CENTER"  /> 
                 </GridPane>
             </children>
         </GridPane>

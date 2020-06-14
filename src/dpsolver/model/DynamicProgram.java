@@ -46,7 +46,9 @@ public class DynamicProgram {
             criteriaArray[i] = criteriaList.get(i);
         }
 
-        Variables.addVariables(data.getVariables());
+        if (data.getVariables().length != 0){
+            Variables.addVariables(data.getVariables());
+        }
         Variables.addVariable(data.getTargetVariable(), true);
         mTargetVariable = Variables.getTargetVariable();
         Variables.addIndexes(Integer.parseInt(data.getDimension()));

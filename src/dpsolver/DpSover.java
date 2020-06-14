@@ -5,6 +5,7 @@
  */
 package dpsolver;
 
+import dpsolver.controller.DpSolverController;
 import dpsolver.controller.VisualizationController;
 import dpsolver.model.DpData;
 import dpsolver.model.DpLog;
@@ -13,8 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,7 +31,7 @@ public class DpSover extends Application {
     private static final FileChooser.ExtensionFilter EXT_FILT = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
     private static final File workDirectory = new File(System.getProperty("user.home"), "Documents/DP Models");
     private static Stage mainStage;
-    private static Stage visualizationStage;
+    private static Stage visualizationStage = null;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -43,15 +43,12 @@ public class DpSover extends Application {
 
         mainStage.setScene(scene);
         mainStage.setTitle("DP-Solver - Untitled");
-        mainStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                Platform.exit();
-            }
-        });
         mainStage.show();
 
-        ((dpsolver.controller.DpSolverController) fxmlLoader.getController()).initializeAccelerators();
+        DpSolverController dpSolverController = (DpSolverController) fxmlLoader.getController();
+        dpSolverController.setStage(mainStage);
+        dpSolverController.setStageProperties();
+        dpSolverController.initializeAccelerators();
     }
 
     /**
@@ -77,6 +74,7 @@ public class DpSover extends Application {
         VisualizationController visualizationController = (VisualizationController) fxmlLoader.getController();
         visualizationController.initializeData(dpData, log, hierarchy);
         visualizationController.setStage(visualizationStage);
+        visualizationController.setStageProperties();
         visualizationController.prepareVisualization();
         visualizationController.initializeAccelerators();
     }
@@ -121,6 +119,18 @@ public class DpSover extends Application {
      */
     public static void setFileName(String fileName) {
         mainStage.setTitle("DP-Solver - " + fileName);
+    }
+    
+    /**
+     * Stops all background tasks and closes all windows.
+     */
+    public static void closeAll(){
+        if (visualizationStage != null){
+            if (visualizationStage.isShowing()){
+                //visualizationStage.close();
+                visualizationStage.fireEvent(new WindowEvent(visualizationStage, WindowEvent.WINDOW_CLOSE_REQUEST));
+            }
+        }
     }
 
     /**

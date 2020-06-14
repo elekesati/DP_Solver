@@ -5,6 +5,7 @@
  */
 package dpsolver.model;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -115,12 +116,12 @@ public class DpData {
      * Clears all fields. By default all fields are null.
      */
     public void clear() {
-        mBranches = null;
-        mCriterias = null;
-        mVariables = null;
-        mTargetVariable = null;
-        mDimension = null;
-        mStartIndexes = null;
+        this.mBranches = null;
+        this.mCriterias = null;
+        this.mVariables = null;
+        this.mTargetVariable = null;
+        this.mDimension = null;
+        this.mStartIndexes = null;
     }
 
     /**
@@ -197,9 +198,9 @@ public class DpData {
         
         DpData dpData = (DpData) object;
         
-        return this.mBranches == dpData.mBranches
-                && this.mCriterias == dpData.mCriterias
-                && this.mVariables == dpData.mVariables
+        return this.mBranches.equals(dpData.mBranches)
+                && this.mCriterias.equals(dpData.mCriterias)
+                && Arrays.equals(this.mVariables, dpData.mVariables)
                 && this.mTargetVariable.equals(dpData.mTargetVariable)
                 && this.mDimension.equals(dpData.mDimension)
                 && this.mStartIndexes.equals(dpData.mStartIndexes);

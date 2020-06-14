@@ -97,7 +97,7 @@ public class AdditionalOperators {
         mOperators[INDEX_AND] = new Operator("&&", 2, true, Operator.PRECEDENCE_ADDITION - 1) {
             @Override
             public double apply(final double... args) {
-                if ((args[0] == 1) && (args[1] == 1)) {
+                if ((args[0] != 0) && (args[1] != 0)) {
                     return 1d;
                 } else {
                     return 0d;
@@ -108,7 +108,7 @@ public class AdditionalOperators {
         mOperators[INDEX_OR] = new Operator("||", 2, true, Operator.PRECEDENCE_ADDITION - 1) {
             @Override
             public double apply(final double... args) {
-                if ((args[0] == 1) || (args[1] == 1)) {
+                if ((args[0] != 0) || (args[1] != 0)) {
                     return 1d;
                 } else {
                     return 0d;

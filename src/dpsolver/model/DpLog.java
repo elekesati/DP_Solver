@@ -19,6 +19,8 @@ public class DpLog {
     private final String mDescription;
     private final int[] mIndexes;
     private final int[] mParent;
+    private boolean mFirstUse = false;
+    private boolean mIsClosed = false;
 
     public DpLog(String key, String description, int[] indexes, int[] parent) {
         this.mKey = key;
@@ -41,6 +43,22 @@ public class DpLog {
 
     public int[] getParent() {
         return mParent;
+    }
+
+    public boolean isClosed() {
+        return mIsClosed;
+    }
+
+    public boolean isFirstUse() {
+        return mFirstUse;
+    }
+
+    public void setFirstUse() {
+        this.mFirstUse = true;
+    }
+
+    public void setClosed() {
+        this.mIsClosed = true;
     }
 
     @Override
