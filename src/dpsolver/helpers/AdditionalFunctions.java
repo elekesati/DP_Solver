@@ -82,7 +82,7 @@ public class AdditionalFunctions {
                     for (int i = 0; i < numArgs; ++i) {
                         intArgs[i] = (int) args[i];
                     }
-                    return Variables.getVector(name).getValue(intArgs);
+                    return Variables.getArray(name).getValue(intArgs);
                 }
             });
         }

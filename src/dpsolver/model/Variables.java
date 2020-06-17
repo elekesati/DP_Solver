@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
  */
 public class Variables {
 
-    private static Map<String, Double> mScalars = new HashMap<>();
-    private static Map<String, Variable> mVectors = new HashMap<>();
+    private static Map<String, Double> mNumbers = new HashMap<>();
+    private static Map<String, Variable> mArrays = new HashMap<>();
     private static String mTargetVariable = new String();
     private static int mDimensions;
 
@@ -32,7 +32,7 @@ public class Variables {
     }
 
     public static void initialize() {
-        mScalars.put("inf", Double.POSITIVE_INFINITY);
+        mNumbers.put("inf", Double.POSITIVE_INFINITY);
     }
 
     /**
@@ -66,67 +66,67 @@ public class Variables {
         }
 
         if (variable.contains("(")) {
-            addVector(variable, value, isTarget);
+            addArray(variable, value, isTarget);
         } else {
-            addScalar(variable, value);
+            addNumber(variable, value);
         }
     }
 
     /**
-     * Updates the value of a scalar
+     * Updates the value of a number
      *
      * @param key name of the variable
      * @param value new value
      */
-    public static void updateScalar(String key, Double value) {
-        mScalars.put(key, value);
+    public static void updateNumber(String key, Double value) {
+        mNumbers.put(key, value);
     }
 
     /**
-     * Updates the value of a vector, this method is used when the index is
+     * Updates the value of an array, this method is used when the index is
      * given in linear form
      *
      * @param key name of the variable
      * @param value new value
      * @param index index of the element
      */
-    public static void updateVector(String key, Double value, int index) {
-        mVectors.get(key).setValue(value, index);
+    public static void updateArray(String key, Double value, int index) {
+        mArrays.get(key).setValue(value, index);
     }
 
     /**
-     * Updates the value of a vector, this method is used when the indexes are
+     * Updates the value of a array, this method is used when the indexes are
      * given in multidimensional form
      *
      * @param key name of the variable
      * @param value new value
      * @param indexes indexes of the element
      */
-    public static void updateVector(String key, Double value, int... indexes) {
-        mVectors.get(key).setValue(value, indexes);
+    public static void updateArray(String key, Double value, int... indexes) {
+        mArrays.get(key).setValue(value, indexes);
     }
 
     /**
-     * Adds a scalar to the map
+     * Adds a number to the map
      *
      * @param variable is the variable name (key in the map)
      * @param value is the initial value of the variable
      */
-    private static void addScalar(String variable, String value) {
+    private static void addNumber(String variable, String value) {
         if (value.isEmpty()) {
-            mScalars.put(variable, Double.NaN);
+            mNumbers.put(variable, Double.NaN);
         } else {
-            mScalars.put(variable, Double.parseDouble(value));
+            mNumbers.put(variable, Double.parseDouble(value));
         }
     }
 
     /**
-     * Adds a vector to the map
+     * Adds an array to the map
      *
      * @param variable is the variable name (key in the map)
      * @param value is the initial value of the variable
      */
-    private static void addVector(String variable, String value, boolean isTarget) {
+    private static void addArray(String variable, String value, boolean isTarget) {
         String variableName = variable.substring(0, variable.indexOf("("));
         String[] dimensionLimitsString = variable.replaceAll("[^0-9,]", "").
                 split(",");
@@ -137,23 +137,23 @@ public class Variables {
         }
 
         if (isTarget) {
-            mVectors.put(variableName, new TargetVariable(variableName, dimensionLimits));
+            mArrays.put(variableName, new TargetVariable(variableName, dimensionLimits));
             mTargetVariable = variableName;
         } else {
-            mVectors.put(variableName, new Variable(variableName, dimensionLimits));
+            mArrays.put(variableName, new Variable(variableName, dimensionLimits));
         }
 
         AdditionalFunctions.addFunction(variableName, dimensionLimits.length, isTarget);
 
         if (!value.isEmpty()) {
             for (int i = 0; i < values.length; ++i) {
-                mVectors.get(variableName).
+                mArrays.get(variableName).
                         setValue(Double.parseDouble(values[i]), i);
             }
         } else {
             int capacity = DimensionConverter.capacity(dimensionLimits);
             for (int i = 0; i < capacity; ++i) {
-                mVectors.get(variableName).setValue(Double.NaN, i);
+                mArrays.get(variableName).setValue(Double.NaN, i);
             }
         }
     }
@@ -228,7 +228,7 @@ public class Variables {
     public static void addIndexes(int dimensions) {
         mDimensions = dimensions;
         for (int i = 1; i <= dimensions; ++i) {
-            addScalar("i" + i, "0");
+            addNumber("i" + i, "0");
         }
     }
 
@@ -239,28 +239,28 @@ public class Variables {
      */
     public static void setIndexes(int... values) {
         for (int i = 1; i <= values.length; ++i) {
-            updateScalar("i" + i, (double) values[i - 1]);
+            updateNumber("i" + i, (double) values[i - 1]);
         }
     }
 
     /**
-     * Returns a scalar specified by name from map
+     * Returns a number specified by name from map
      *
      * @param key name of the variable
      * @return variable
      */
-    public static Double getScalar(String key) {
-        return mScalars.get(key);
+    public static Double getNumber(String key) {
+        return mNumbers.get(key);
     }
 
     /**
-     * Returns a vector specified by name from map
+     * Returns an array specified by name from map
      *
      * @param key name of the variable
      * @return variable
      */
-    public static Variable getVector(String key) {
-        return mVectors.get(key);
+    public static Variable getArray(String key) {
+        return mArrays.get(key);
     }
 
     /**
@@ -269,7 +269,7 @@ public class Variables {
      * @return set with names
      */
     public static Set<String> getVariableNames() {
-        return mScalars.keySet();
+        return mNumbers.keySet();
     }
 
     /**
@@ -278,7 +278,7 @@ public class Variables {
      * @return map of scalars
      */
     public static Map<String, Double> getVariableMap() {
-        return mScalars;
+        return mNumbers;
     }
 
     /**
@@ -286,8 +286,8 @@ public class Variables {
      */
     public static void clear() {
         mDimensions = 0;
-        mScalars.clear();
-        mVectors.clear();
+        mNumbers.clear();
+        mArrays.clear();
         mTargetVariable = new String();
     }
 
@@ -295,8 +295,8 @@ public class Variables {
      * Prints all variable
      */
     public static void printAll() {
-        System.out.println("Scalars: " + mScalars.toString());
-        System.out.println("Vectors: " + mVectors.toString());
+        System.out.println("Numbers: " + mNumbers.toString());
+        System.out.println("Arrays: " + mArrays.toString());
     }
 
     /**
@@ -316,7 +316,7 @@ public class Variables {
     public static int[] getIndexes() {
         int[] indexes = new int[mDimensions];
         for (int i = 1; i <= indexes.length; ++i) {
-            indexes[i - 1] = getScalar("i" + i).intValue();
+            indexes[i - 1] = getNumber("i" + i).intValue();
         }
         return indexes;
     }

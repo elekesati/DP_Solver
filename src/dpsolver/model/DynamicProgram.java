@@ -62,19 +62,17 @@ public class DynamicProgram {
      * @return
      */
     public static Double solve(int... args) {
-        if (mError) {
+        if (mError){
             return Double.NaN;
         }
-
-        TargetVariable targetVariable = (TargetVariable) Variables.getVector(mTargetVariable);
+        
+        TargetVariable targetVariable = (TargetVariable) Variables.getArray(mTargetVariable);
         int[] parentArgs = Variables.getIndexes();
         Double result = Double.NaN;
-
-        try {
+        
+        try{
             result = targetVariable.getValue(args);
-
-            mLog.add(new DpLog(DpLog.GET, result.toString(), args, parentArgs));
-
+            
             String key = Arrays.toString(parentArgs);
             if (!mHierarchy.containsKey(key)) {
                 if (mHierarchy.isEmpty()) {
@@ -91,42 +89,65 @@ public class DynamicProgram {
 
                 mLog.add(new DpLog(DpLog.ERROR, "circle", args, parentArgs));
             }
-
+            
             if (targetVariable.getStatus(args) == TargetVariable.WHITE) {
-                targetVariable.updateStatus(TargetVariable.GRAY, args);
+		targetVariable.updateStatus(TargetVariable.GRAY, args);
             }
 
             if (result.isNaN()) {
                 Variables.setIndexes(args);
-                result = new Expression(mFormula
-                        .getActualBranchExpression())
-                        .evaluate();
-                Variables.updateVector(mTargetVariable, result, args);
-                Variables.setIndexes(parentArgs);
+                Expression expression = mFormula.getActualBranchExpression();
+                
+                if (expression == null){
+                    mError = true;
+                    mIndexOutOfBounds = true;
+                    result = Double.NaN;
 
-                mLog.add(new DpLog(DpLog.SET, result.toString(), args, parentArgs));
+                    mLog.add(new DpLog(DpLog.ERROR, "not defined", args, parentArgs));
+                }
+                else{
+                    result = new Expression(expression).evaluate();
+                    Variables.updateArray(mTargetVariable, result, args);
+                    Variables.setIndexes(parentArgs);
+
+                    mLog.add(new DpLog(DpLog.SET, result.toString(), args, parentArgs));
+                }
+                
             }
 
             targetVariable.updateStatus(TargetVariable.BLACK, args);
-
-        } catch (IndexOutOfBoundsException e) {
+        }
+        catch (IndexOutOfBoundsException ex){
             Variables.setIndexes(args);
             Expression expression = mFormula.getActualBranchExpression();
-
-            if (expression != null) {
-                result = expression.evaluate();
-            } else {
+            
+            if (!indexesInBounds(targetVariable, args) || expression == null){
                 mError = true;
-                mIndexOutOfBounds = true;
-                result = Double.NaN;
+		mIndexOutOfBounds = true;
+		result = Double.NaN;
 
-                mLog.add(new DpLog(DpLog.ERROR, "index out of bound", args, parentArgs));
+		mLog.add(new DpLog(DpLog.ERROR, "index out of bound", args, parentArgs));
             }
-
+            else{
+                result = expression.evaluate();
+            }
+            
             Variables.setIndexes(parentArgs);
         }
-
+        
         return result;
+    }
+    
+    private static boolean indexesInBounds(TargetVariable targetVariable, int... indexes){
+        int[] limits = targetVariable.getDimensionLimits();
+        
+        for (int i=0; i<indexes.length; ++i){
+            if ((indexes[i] < -1) || (indexes[i] > limits[i])){
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     /**
@@ -183,5 +204,26 @@ public class DynamicProgram {
      */
     public static Map<String, HashSet<int[]>> getHierarchy() {
         return mHierarchy;
+    }
+    
+    /**
+     * Returns a string which specifies the errors occurred or an empty string
+     * if no errors were logged.
+     * @return error message
+     */
+    public static String getErrorMessage(){
+        if (!mError){
+            return "";
+        }
+        
+        if (mIndexOutOfBounds){
+            return "Index out of bounds or the function is not defined for some indexes.";
+        }
+        
+        if (mHasCircle){
+            return "Circle found.";
+        }
+        
+        return "";
     }
 }

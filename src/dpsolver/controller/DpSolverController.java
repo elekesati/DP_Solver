@@ -23,6 +23,9 @@ import java.util.List;
 import dpsolver.model.*;
 import dpsolver.DpSover;
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Arrays;
 import java.util.Optional;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -54,6 +57,7 @@ public class DpSolverController implements Initializable {
     private static final String RUN = "Run.";
     private static final String DONE = "Done.";
     private static final String INPUT_ERROR = "Input error - ";
+    private static final String RUNTIME_ERROR = "Runtime error - ";
     private static final String CANCEL = "Canceled.";
     private static final String EMPTY = "";
 
@@ -238,16 +242,38 @@ public class DpSolverController implements Initializable {
      * Runs the dynamic program.
      */
     @FXML
-    private void runAction(ActionEvent event) /*throws Exception*/ {
+    private void runAction(ActionEvent event) throws Exception {
         DynamicProgram.restart();
         dpDone = false;
         try {
             updateStatus(RUN);
             resultTextField.clear();
+            
+            //DECLARATIONS
+            //Instant start;
+            //Instant finish;
+            
+            //PREPARE TIME
+            //start = Instant.now();
+            
             checkDimensionAndStartIndexInputs();
             DpData data = loadInputData();
             DynamicProgram.load(data);
+            
+            //finish = Instant.now();
+            //System.out.print(Duration.between(start, finish).toMillis());
+            //END PREPARE TIME
+            //System.out.print(", ");
+            //RUN TIME
+            //start = Instant.now();
+            
             resultTextField.setText(DynamicProgram.solve(data.getStartIndexesArray()).toString());
+            
+            //finish = Instant.now();
+            //System.out.println(Duration.between(start, finish).toMillis());
+            //System.out.println("--");
+            //END RUN TIME
+            
             updateStatus(DONE);
         } catch (NumberFormatException ex) {
             updateStatus(INPUT_ERROR + ex.getMessage() + ".");
@@ -258,6 +284,10 @@ public class DpSolverController implements Initializable {
         } catch (Exception ex) {
             updateStatus(ex.getMessage());
         } finally {
+            showRuntimeErrors();
+            DynamicProgram.printHierarchy();
+            //DynamicProgram.printLog();
+            //Variables.printAll();
             dpDone = true;
         }
     }
@@ -417,6 +447,20 @@ public class DpSolverController implements Initializable {
                     + dimensionFieldText + " indexes.");
         }
 
+    }
+    
+    /**
+     * Check if there was any runtime error logged and shows it in the status 
+     * bar.
+     */
+    private void showRuntimeErrors(){
+        String errorMessage = DynamicProgram.getErrorMessage();
+        if (errorMessage.isEmpty()){
+            return;
+        }
+        else{
+            updateStatus(RUNTIME_ERROR + errorMessage);
+        }
     }
 
     /**
