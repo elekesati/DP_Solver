@@ -7,6 +7,7 @@ package dpsolver.controller;
 
 import dpsolver.model.DpData;
 import dpsolver.model.DpLog;
+import dpsolver.model.Variables;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -554,7 +555,13 @@ public class VisualizationController implements Initializable {
      * sets up the headers.
      */
     public void prepareVisualization() {
-        int[] bounds = convertToCellIndex(mDpData.getStartIndexesArray());
+        int[] bounds = Variables.getArray(Variables.getTargetVariable()).getBounds();
+
+        for (int i = 0; i < bounds.length; ++i) {
+            --bounds[i];
+        }
+
+        bounds = convertToCellIndex(bounds);
 
         setCellSize(bounds);
         createCells(bounds);
@@ -583,6 +590,9 @@ public class VisualizationController implements Initializable {
         this.mStage = visualizationStage;
     }
 
+    /**
+     * Sets the properties of the stage.
+     */
     public void setStageProperties() {
         mStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override

@@ -42,7 +42,9 @@ public class Variables {
      */
     public static void addVariables(String[] variables) throws Exception {
         for (String string : variables) {
-            addVariable(string, false);
+            if (!string.trim().isEmpty()) {
+                addVariable(string, false);
+            }
         }
     }
 

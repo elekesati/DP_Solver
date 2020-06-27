@@ -96,7 +96,7 @@ public class Variable {
      *
      * @return array of dimensoion limits
      */
-    public int[] getDimensionLimits() {
+    public int[] getBounds() {
         return mBounds;
     }
 

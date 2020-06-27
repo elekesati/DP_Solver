@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Application;
-import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -32,6 +31,8 @@ public class DpSover extends Application {
     private static final File workDirectory = new File(System.getProperty("user.home"), "Documents/DP Models");
     private static Stage mainStage;
     private static Stage visualizationStage = null;
+    private static DpSolverController dpSolverController;
+    private static VisualizationController visualizationController;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -45,7 +46,7 @@ public class DpSover extends Application {
         mainStage.setTitle("DP-Solver - Untitled");
         mainStage.show();
 
-        DpSolverController dpSolverController = (DpSolverController) fxmlLoader.getController();
+        dpSolverController = (DpSolverController) fxmlLoader.getController();
         dpSolverController.setStage(mainStage);
         dpSolverController.setStageProperties();
         dpSolverController.initializeAccelerators();
@@ -59,7 +60,7 @@ public class DpSover extends Application {
      * @param hierarchy parent-child relations between the nodes
      * @throws Exception
      */
-    public static void newWindow(DpData dpData, List<DpLog> log, Map<String, HashSet<int[]>> hierarchy)
+    public static void openVisualizationWindow(DpData dpData, List<DpLog> log, Map<String, HashSet<int[]>> hierarchy)
             throws Exception {
         visualizationStage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(DpSover.class.getResource("/dpsolver/view/visualization_view.fxml"));
@@ -72,7 +73,7 @@ public class DpSover extends Application {
         visualizationStage.setResizable(false);
         visualizationStage.show();
 
-        VisualizationController visualizationController = (VisualizationController) fxmlLoader.getController();
+        visualizationController = (VisualizationController) fxmlLoader.getController();
         visualizationController.initializeData(dpData, log, hierarchy);
         visualizationController.setStage(visualizationStage);
         visualizationController.setStageProperties();

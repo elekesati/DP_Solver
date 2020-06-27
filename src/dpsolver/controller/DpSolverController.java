@@ -23,11 +23,9 @@ import java.util.List;
 import dpsolver.model.*;
 import dpsolver.DpSover;
 import java.io.File;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Arrays;
 import java.util.Optional;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -54,12 +52,14 @@ public class DpSolverController implements Initializable {
     private static final String LOAD = "Loading model.";
     private static final String SAVE = "Saving model.";
     private static final String CREATE = "Creating model.";
-    private static final String RUN = "Run.";
+    private static final String RUN = "Running...";
     private static final String DONE = "Done.";
     private static final String INPUT_ERROR = "Input error - ";
     private static final String RUNTIME_ERROR = "Runtime error - ";
     private static final String CANCEL = "Canceled.";
+    private static final String WINDOW_ERROR = "Cannot open visualization window.";
     private static final String EMPTY = "";
+    private static final String STACKOVERFLOW = "Problem size is too big to can be resolved.";
 
     private static final String UNSAVED_CHANGES_TITLE = "There are unsaved changes";
     private static final String UNSAVED_CHANGES_QUESTION = "Do you want to save changes?";
@@ -94,7 +94,9 @@ public class DpSolverController implements Initializable {
     private int numRows = 1;
     private DpData dpData;
     private boolean dpDone = false;
+    private boolean isRunning = false;
     private File model = null;
+    private Task task = null;
 
     /**
      * Initializes the controller class.
@@ -243,53 +245,53 @@ public class DpSolverController implements Initializable {
      */
     @FXML
     private void runAction(ActionEvent event) throws Exception {
-        DynamicProgram.restart();
-        dpDone = false;
-        try {
-            updateStatus(RUN);
-            resultTextField.clear();
-            
-            //DECLARATIONS
-            //Instant start;
-            //Instant finish;
-            
-            //PREPARE TIME
-            //start = Instant.now();
-            
-            checkDimensionAndStartIndexInputs();
-            DpData data = loadInputData();
-            DynamicProgram.load(data);
-            
-            //finish = Instant.now();
-            //System.out.print(Duration.between(start, finish).toMillis());
-            //END PREPARE TIME
-            //System.out.print(", ");
-            //RUN TIME
-            //start = Instant.now();
-            
-            resultTextField.setText(DynamicProgram.solve(data.getStartIndexesArray()).toString());
-            
-            //finish = Instant.now();
-            //System.out.println(Duration.between(start, finish).toMillis());
-            //System.out.println("--");
-            //END RUN TIME
-            
-            updateStatus(DONE);
-        } catch (NumberFormatException ex) {
-            updateStatus(INPUT_ERROR + ex.getMessage() + ".");
-        } catch (UnknownFunctionOrVariableException ex) {
-            updateStatus(INPUT_ERROR + " " + ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            updateStatus(INPUT_ERROR + " " + ex.getMessage());
-        } catch (Exception ex) {
-            updateStatus(ex.getMessage());
-        } finally {
-            showRuntimeErrors();
-            DynamicProgram.printHierarchy();
-            //DynamicProgram.printLog();
-            //Variables.printAll();
-            dpDone = true;
+        if (isRunning) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Model is already running.");
+            alert.show();
+            return;
         }
+
+        task = new Task() {
+            @Override
+            protected Object call() throws Exception {
+                DynamicProgram.restart();
+                isRunning = true;
+                dpDone = false;
+                updateStatus(RUN);
+
+                try {
+                    resultTextField.clear();
+
+                    checkDimensionAndStartIndexInputs();
+                    DpData data = loadInputData();
+                    DynamicProgram.load(data);
+
+                    updateResultTextField(DynamicProgram.solve(data.getStartIndexesArray()));
+
+                    updateStatus(DONE);
+                } catch (NumberFormatException ex) {
+                    updateStatus(INPUT_ERROR + ex.getMessage() + ".");
+                } catch (UnknownFunctionOrVariableException ex) {
+                    updateStatus(INPUT_ERROR + " " + ex.getMessage());
+                } catch (IllegalArgumentException ex) {
+                    updateStatus(INPUT_ERROR + " " + ex.getMessage());
+                } catch (StackOverflowError ex) {
+                    updateStatus(STACKOVERFLOW);
+                } catch (Exception ex) {
+                    updateStatus(ex.getMessage());
+                } finally {
+                    showRuntimeErrors();
+                    dpDone = true;
+                    isRunning = false;
+                }
+
+                return null;
+            }
+        };
+
+        new Thread(task).start();
     }
 
     /**
@@ -344,7 +346,7 @@ public class DpSolverController implements Initializable {
         if (Integer.parseInt(data.getDimension()) > 2) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setContentText("Visualization works only with 1-D & 2-D models.");
+            alert.setContentText("Visualization works only with 1-D or 2-D models.");
             alert.show();
             return;
         }
@@ -358,9 +360,9 @@ public class DpSolverController implements Initializable {
         }
 
         try {
-            dpsolver.DpSover.newWindow(data, DynamicProgram.getLog(), DynamicProgram.getHierarchy());
+            dpsolver.DpSover.openVisualizationWindow(data, DynamicProgram.getLog(), DynamicProgram.getHierarchy());
         } catch (Exception ex) {
-            System.out.println(ex.toString());
+            updateStatus(WINDOW_ERROR);
         }
     }
 
@@ -448,17 +450,16 @@ public class DpSolverController implements Initializable {
         }
 
     }
-    
+
     /**
-     * Check if there was any runtime error logged and shows it in the status 
+     * Check if there was any runtime error logged and shows it in the status
      * bar.
      */
-    private void showRuntimeErrors(){
+    private void showRuntimeErrors() {
         String errorMessage = DynamicProgram.getErrorMessage();
-        if (errorMessage.isEmpty()){
+        if (errorMessage.isEmpty()) {
             return;
-        }
-        else{
+        } else {
             updateStatus(RUNTIME_ERROR + errorMessage);
         }
     }
@@ -523,7 +524,26 @@ public class DpSolverController implements Initializable {
      * @param text status text
      */
     private void updateStatus(String text) {
-        statusBarText.setText(text);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                statusBarText.setText(text);
+            }
+        });
+    }
+
+    /**
+     * Updates the result text field.
+     *
+     * @param text status
+     */
+    private void updateResultTextField(Double result) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                resultTextField.setText(result.toString());
+            }
+        });
     }
 
     /**
@@ -582,10 +602,19 @@ public class DpSolverController implements Initializable {
         this.mStage = visualizationStage;
     }
 
+    /**
+     * Sets the properties of the stage.
+     */
     public void setStageProperties() {
         mStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
+                if (task != null) {
+                    if (task.isRunning()) {
+                        task.cancel();
+                    }
+                }
+
                 if (hasUnsavedChanges()) {
                     switch (showConfirmDialog(UNSAVED_CHANGES_TITLE, UNSAVED_CHANGES_QUESTION, true)) {
                         case CANCEL_OPERATION:

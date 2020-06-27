@@ -20,6 +20,10 @@ import net.objecthunter.exp4j.Expression;
  */
 public class DynamicProgram {
 
+    private static final String CIRCLE_ERROR = "Circle found.";
+    private static final String INDEX_OUT_OF_BOUNDS_ERROR = "The input formula is not defined for this index.";
+    private static final String INVALID_INDEX_ERROR = "Index out of bound.";
+
     private static Formula mFormula = new Formula();
     private static String mTargetVariable;
 
@@ -62,17 +66,19 @@ public class DynamicProgram {
      * @return
      */
     public static Double solve(int... args) {
-        if (mError){
+        if (mError) {
             return Double.NaN;
         }
-        
+
         TargetVariable targetVariable = (TargetVariable) Variables.getArray(mTargetVariable);
         int[] parentArgs = Variables.getIndexes();
         Double result = Double.NaN;
-        
-        try{
+
+        try {
             result = targetVariable.getValue(args);
-            
+
+            mLog.add(new DpLog(DpLog.GET, result.toString(), args, parentArgs));
+
             String key = Arrays.toString(parentArgs);
             if (!mHierarchy.containsKey(key)) {
                 if (mHierarchy.isEmpty()) {
@@ -87,66 +93,70 @@ public class DynamicProgram {
                 mHasCircle = true;
                 result = Double.NaN;
 
-                mLog.add(new DpLog(DpLog.ERROR, "circle", args, parentArgs));
+                mLog.add(new DpLog(DpLog.ERROR, CIRCLE_ERROR, args, parentArgs));
             }
-            
+
             if (targetVariable.getStatus(args) == TargetVariable.WHITE) {
-		targetVariable.updateStatus(TargetVariable.GRAY, args);
+                targetVariable.updateStatus(TargetVariable.GRAY, args);
             }
 
             if (result.isNaN()) {
                 Variables.setIndexes(args);
                 Expression expression = mFormula.getActualBranchExpression();
-                
-                if (expression == null){
+
+                if (expression == null) {
                     mError = true;
                     mIndexOutOfBounds = true;
                     result = Double.NaN;
 
-                    mLog.add(new DpLog(DpLog.ERROR, "not defined", args, parentArgs));
-                }
-                else{
+                    mLog.add(new DpLog(DpLog.ERROR, INVALID_INDEX_ERROR, args, parentArgs));
+                } else {
                     result = new Expression(expression).evaluate();
                     Variables.updateArray(mTargetVariable, result, args);
                     Variables.setIndexes(parentArgs);
 
                     mLog.add(new DpLog(DpLog.SET, result.toString(), args, parentArgs));
                 }
-                
+
             }
 
             targetVariable.updateStatus(TargetVariable.BLACK, args);
-        }
-        catch (IndexOutOfBoundsException ex){
+        } catch (IndexOutOfBoundsException ex) {
             Variables.setIndexes(args);
             Expression expression = mFormula.getActualBranchExpression();
-            
-            if (!indexesInBounds(targetVariable, args) || expression == null){
-                mError = true;
-		mIndexOutOfBounds = true;
-		result = Double.NaN;
 
-		mLog.add(new DpLog(DpLog.ERROR, "index out of bound", args, parentArgs));
-            }
-            else{
+            if (!indexesInBounds(targetVariable, args) || expression == null) {
+                mError = true;
+                mIndexOutOfBounds = true;
+                result = Double.NaN;
+
+                mLog.add(new DpLog(DpLog.ERROR, INDEX_OUT_OF_BOUNDS_ERROR, args, parentArgs));
+            } else {
                 result = expression.evaluate();
             }
-            
+
             Variables.setIndexes(parentArgs);
         }
-        
+
         return result;
     }
-    
-    private static boolean indexesInBounds(TargetVariable targetVariable, int... indexes){
-        int[] limits = targetVariable.getDimensionLimits();
-        
-        for (int i=0; i<indexes.length; ++i){
-            if ((indexes[i] < -1) || (indexes[i] > limits[i])){
+
+    /**
+     * Checks if indexes are in bounds of target variable.
+     *
+     * @param targetVariable target variable
+     * @param indexes current indexes
+     * @return
+     */
+    private static boolean indexesInBounds(TargetVariable targetVariable, int... indexes) {
+        int[] limits = targetVariable.getBounds();
+
+        for (int i = 0; i < indexes.length; ++i) {
+            if ((indexes[i] < -1) || (indexes[i] > limits[i])) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -205,25 +215,26 @@ public class DynamicProgram {
     public static Map<String, HashSet<int[]>> getHierarchy() {
         return mHierarchy;
     }
-    
+
     /**
      * Returns a string which specifies the errors occurred or an empty string
      * if no errors were logged.
+     *
      * @return error message
      */
-    public static String getErrorMessage(){
-        if (!mError){
+    public static String getErrorMessage() {
+        if (!mError) {
             return "";
         }
-        
-        if (mIndexOutOfBounds){
+
+        if (mIndexOutOfBounds) {
             return "Index out of bounds or the function is not defined for some indexes.";
         }
-        
-        if (mHasCircle){
+
+        if (mHasCircle) {
             return "Circle found.";
         }
-        
+
         return "";
     }
 }

@@ -46,7 +46,7 @@
                     
                     <MenuItem text="Save model" onAction="#saveAction">
                         <accelerator>
-                            <KeyCodeCombination alt="ANY" code="S" control="DOWN" shift="ANY" meta="ANY" shortcut="ANY"/>     
+                            <KeyCodeCombination alt="ANY" code="S" control="DOWN" shift="UP" meta="ANY" shortcut="ANY"/>     
                         </accelerator>
                     </MenuItem>
                     
