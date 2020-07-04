@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dpsolver.model;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Contains the input data which describes the dynamic program
+ * Contains the input data which describes the dynamic program.
  *
  * @author Elekes Attila
  */
@@ -23,7 +18,7 @@ public class DpData {
     private String mStartIndexes;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public DpData() {
         mBranches = null;
@@ -71,7 +66,7 @@ public class DpData {
     }
 
     /**
-     * Returns the dimension
+     * Returns the dimension.
      *
      * @return the dimension
      */
@@ -80,7 +75,7 @@ public class DpData {
     }
 
     /**
-     * Returns the start indexes
+     * Returns the start indexes.
      *
      * @return the start indexes
      */
@@ -88,31 +83,67 @@ public class DpData {
         return mStartIndexes;
     }
 
+    /**
+     * Adds the branches to the model.
+     *
+     * @param mBranches branches of the model
+     * @return this object
+     */
     public DpData setBranches(List<String> mBranches) {
         this.mBranches = mBranches;
         return this;
     }
 
+    /**
+     * Adds the criterias to the model.
+     *
+     * @param mCriterias criterias of the model
+     * @return this object
+     */
     public DpData setCriterias(List<String> mCriterias) {
         this.mCriterias = mCriterias;
         return this;
     }
 
+    /**
+     * Adds the variables to the model
+     *
+     * @param mVariables variables of the model
+     * @return this object
+     */
     public DpData setVariables(String[] mVariables) {
         this.mVariables = mVariables;
         return this;
     }
 
+    /**
+     * Adds the target variable to the model
+     *
+     * @param mTargetVariable target variable of the model
+     * @return this object
+     */
     public DpData setTargetVariable(String mTargetVariable) {
         this.mTargetVariable = mTargetVariable;
         return this;
     }
 
+    /**
+     * Sets the dimension of the model
+     *
+     * @param mDimension dimension of the model
+     * @return this object
+     */
     public DpData setDimension(String mDimension) {
         this.mDimension = mDimension;
         return this;
     }
 
+    /**
+     * Sets the start indexes of the model
+     *
+     * @param mStartIndexes start indexes of the model
+     * @return this object
+     */
     public DpData setStartIndexes(String mStartIndexes) {
         this.mStartIndexes = mStartIndexes;
         return this;
@@ -131,7 +162,7 @@ public class DpData {
     }
 
     /**
-     * Returns the array of start indexes
+     * Returns the array of start indexes.
      *
      * @return array of start indexes
      */
@@ -149,7 +180,7 @@ public class DpData {
     /**
      * Check if all fields are empty.
      *
-     * @return
+     * @return true if all fields are empty
      */
     public boolean isEmpty() {
         return mBranches == null
@@ -160,6 +191,11 @@ public class DpData {
                 && mStartIndexes == null;
     }
 
+    /**
+     * Returns the object data in string format.
+     *
+     * @return object data in string format
+     */
     @Override
     public String toString() {
         String string = new String();
@@ -190,6 +226,12 @@ public class DpData {
         return string;
     }
 
+    /**
+     * Compares this object with another.
+     *
+     * @param object other object
+     * @return true if the two objects are the same or their fields are equal.
+     */
     @Override
     public boolean equals(Object object) {
         if (this == object) {

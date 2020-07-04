@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dpsolver.model;
 
 import java.util.ArrayList;
@@ -11,7 +6,7 @@ import javafx.util.Pair;
 import net.objecthunter.exp4j.Expression;
 
 /**
- * Stores the formula of the problem
+ * Stores the formula of the problem.
  *
  * @author Elekes Attila
  */
@@ -24,16 +19,16 @@ public class Formula {
     private byte mElseBranchPosition;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public Formula() {
         this.mBranches = new ArrayList<>();
     }
 
     /**
-     * Adds a branch of the formula
+     * Adds a branch of the formula.
      *
-     * @param branch the formula of the branch
+     * @param branch the branch of the branch formula
      * @param criteria the criteria which defines when to use this branch
      */
     public void addBranch(String branch, String criteria) throws IllegalArgumentException {
@@ -55,6 +50,12 @@ public class Formula {
         }
     }
 
+    /**
+     * Adds a branch of the formula.
+     *
+     * @param branch pair with the branch of the formula and the criteria which
+     * defines when to use this branch
+     */
     public void addBranch(Pair<String, String> branch) throws IllegalArgumentException {
 
         if (branch.getValue().equals(ELSE)) {
@@ -75,7 +76,7 @@ public class Formula {
     }
 
     /**
-     * Adds branches to the formula
+     * Adds branches to the formula.
      *
      * @param branches array of branches
      * @param criterias array of criterias
@@ -87,7 +88,7 @@ public class Formula {
     }
 
     /**
-     * Returns the corresponding branch for the cell specified by its indexes
+     * Returns the corresponding branch for the cell specified by its indexes.
      *
      * @return corresponding branch
      */
@@ -110,7 +111,7 @@ public class Formula {
     }
 
     /**
-     * Returns the formula as list of branches (executable part and criteria)
+     * Returns the formula as list of branches (executable part and criteria).
      *
      * @return list of branches
      */
@@ -123,7 +124,7 @@ public class Formula {
     }
 
     /**
-     * Removes all branches
+     * Removes all branches.
      */
     public void clear() {
         mBranches.clear();

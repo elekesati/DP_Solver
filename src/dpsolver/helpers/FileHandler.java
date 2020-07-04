@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dpsolver.helpers;
 
 import dpsolver.model.DpData;
@@ -14,14 +9,14 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Saves and reloads the data of the dynamic program
+ * Saves and reloads the data of the dynamic program.
  *
  * @author Elekes Attila
  */
 public class FileHandler {
 
     /**
-     * Constructor
+     * Constructor.
      */
     private FileHandler() {
     }
@@ -77,7 +72,7 @@ public class FileHandler {
     }
 
     /**
-     * Saves the program data
+     * Saves the program data.
      *
      * @param file file to save data of dynamic program
      * @param data the input data of the program

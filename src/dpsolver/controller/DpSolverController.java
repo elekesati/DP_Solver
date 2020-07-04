@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dpsolver.controller;
 
 import dpsolver.helpers.FileHandler;
@@ -280,7 +275,7 @@ public class DpSolverController implements Initializable {
                 } catch (StackOverflowError ex) {
                     updateStatus(STACKOVERFLOW);
                 } catch (Exception ex) {
-                    updateStatus(ex.getMessage());
+                    updateStatus(RUNTIME_ERROR + ex.getMessage());
                 } finally {
                     showRuntimeErrors();
                     dpDone = true;

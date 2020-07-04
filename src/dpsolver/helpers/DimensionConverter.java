@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dpsolver.helpers;
 
 /**
  * Contains functions which can convert multidimensional index to linear and
- * linearindex to multidimensional
+ * linear index to multidimensional.
  *
  * @author Elekes Attila
  */
@@ -21,7 +16,7 @@ public class DimensionConverter {
 
     /**
      * Converts the index of a multidimensional array to the corresponding index
-     * of its linear representation
+     * of its linear representation.
      *
      * @param bounds dimension limits
      * @param indexes array of indexes
@@ -44,7 +39,7 @@ public class DimensionConverter {
 
         for (int i = 0; i < bounds.length; ++i) {
             if (indexes[i] < 0 || indexes[i] >= bounds[i]) {
-                throw new IndexOutOfBoundsException("Index out of bounds");
+                throw new IndexOutOfBoundsException("Index out of bounds.");
             }
         }
 
@@ -65,7 +60,7 @@ public class DimensionConverter {
 
     /**
      * Converts the indexes of a linear array to the corresponding index of its
-     * multidimensional representation
+     * multidimensional representation.
      *
      * @param bounds dimension limits
      * @param index index
@@ -83,7 +78,7 @@ public class DimensionConverter {
         }
 
         if (index >= capacity(bounds)) {
-            throw new IndexOutOfBoundsException("Index out of bounds");
+            throw new IndexOutOfBoundsException("Index out of bounds.");
         }
 
         int prod = 1;

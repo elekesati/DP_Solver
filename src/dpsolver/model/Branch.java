@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dpsolver.model;
 
 import dpsolver.helpers.AdditionalOperators;
@@ -12,7 +7,7 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 /**
- * Stores a branch of the target formula
+ * Stores a branch of the target formula.
  *
  * @author Elekes Attila
  */
@@ -22,7 +17,7 @@ public class Branch {
     private final Pair<Expression, Expression> mExpressionRepresentation;
 
     /**
-     * Constructs the branch from two input strings
+     * Constructs the branch from two input strings.
      *
      * @param branch executable part of the branch
      * @param criteria criteria to specify the branch`s range of interpretation
@@ -33,7 +28,7 @@ public class Branch {
     }
 
     /**
-     * Constructs the branch from a pair of strings
+     * Constructs the branch from a pair of strings.
      *
      * @param branchString contains the executable part of the branch and the
      * criteria to specify it`s range of interpretation
@@ -44,7 +39,7 @@ public class Branch {
     }
 
     /**
-     * Builds the expressions from the given strings
+     * Builds the expressions from the given strings.
      *
      * @return contains a pair of expressions built from the given strings which
      * will be used by exp4j
@@ -70,7 +65,7 @@ public class Branch {
     }
 
     /**
-     * Returns the string representation of the branch
+     * Returns the string representation of the branch.
      *
      * @return the branch in string format
      */
@@ -79,7 +74,7 @@ public class Branch {
     }
 
     /**
-     * Returns the expression representation of the branch
+     * Returns the expression representation of the branch.
      *
      * @return the branch in expression format
      */

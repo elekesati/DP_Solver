@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dpsolver.model;
 
 import dpsolver.helpers.AdditionalFunctions;
@@ -14,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Stores all variables in a map
+ * Stores all variables in a map.
  *
  * @author Elekes Attila
  */
@@ -26,7 +21,7 @@ public class Variables {
     private static int mDimensions;
 
     /**
-     * Constructor
+     * Constructor.
      */
     private Variables() {
     }
@@ -36,7 +31,7 @@ public class Variables {
     }
 
     /**
-     * Adds variables and their initial values to the map
+     * Adds variables and their initial values to the map.
      *
      * @param variables contains the variables and the values in string format
      */
@@ -49,7 +44,7 @@ public class Variables {
     }
 
     /**
-     * Adds a single variable and its initial value to the map
+     * Adds a single variable and its initial value to the map.
      *
      * @param input contains the variable and the value in string format
      * @param isTarget flag for target variable
@@ -75,7 +70,7 @@ public class Variables {
     }
 
     /**
-     * Updates the value of a number
+     * Updates the value of a number.
      *
      * @param key name of the variable
      * @param value new value
@@ -86,7 +81,7 @@ public class Variables {
 
     /**
      * Updates the value of an array, this method is used when the index is
-     * given in linear form
+     * given in linear form.
      *
      * @param key name of the variable
      * @param value new value
@@ -98,7 +93,7 @@ public class Variables {
 
     /**
      * Updates the value of a array, this method is used when the indexes are
-     * given in multidimensional form
+     * given in multidimensional form.
      *
      * @param key name of the variable
      * @param value new value
@@ -109,7 +104,7 @@ public class Variables {
     }
 
     /**
-     * Adds a number to the map
+     * Adds a number to the map.
      *
      * @param variable is the variable name (key in the map)
      * @param value is the initial value of the variable
@@ -123,7 +118,7 @@ public class Variables {
     }
 
     /**
-     * Adds an array to the map
+     * Adds an array to the map.
      *
      * @param variable is the variable name (key in the map)
      * @param value is the initial value of the variable
@@ -132,7 +127,7 @@ public class Variables {
         String variableName = variable.substring(0, variable.indexOf("("));
         String[] dimensionLimitsString = variable.replaceAll("[^0-9,]", "").
                 split(",");
-        String[] values = value.replaceAll("[^0-9,.]", "").split(",");
+        String[] values = value.replaceAll("[^0-9,.\\-]", "").split(",");
         int[] dimensionLimits = new int[dimensionLimitsString.length];
         for (int i = 0; i < dimensionLimitsString.length; ++i) {
             dimensionLimits[i] = Integer.parseInt(dimensionLimitsString[i]);
@@ -169,7 +164,7 @@ public class Variables {
     private static void checkVariableInput(String input) throws Exception {
         String variable = input.replaceAll(" ", "");
 
-        if (!variable.replaceAll("[a-zA-Z0-9_,.{}()=]", "").trim().isEmpty()) {
+        if (!variable.replaceAll("[a-zA-Z0-9_,.{}()=\\-]", "").trim().isEmpty()) {
             throw new IllegalArgumentException("Illegal characters in string: " + input);
         }
 
@@ -198,7 +193,7 @@ public class Variables {
         Matcher matcher = Pattern.compile("(?<=\\()(.*?)(?=\\))").matcher(variable);
 
         if (matcher.find()) {
-            if (!matcher.group().replaceAll(",", "").replaceAll("\\d", "").isEmpty()) {
+            if (!matcher.group().replaceAll("[\\-,]", "").replaceAll("\\d", "").isEmpty()) {
                 throw new IllegalArgumentException("Illegal number format: " + input);
             }
 
@@ -210,7 +205,7 @@ public class Variables {
         matcher = Pattern.compile("(?<=\\{)(.*?)(?=\\})").matcher(variable);
 
         if (matcher.find()) {
-            if (!matcher.group().replaceAll(",", "").replaceAll("\\d", "").isEmpty()) {
+            if (!matcher.group().replaceAll("[\\-,]", "").replaceAll("\\d", "").isEmpty()) {
                 throw new IllegalArgumentException("Illegal number format: " + input);
             }
 
@@ -223,7 +218,7 @@ public class Variables {
 
     /**
      * Sets one variable for each Variables starting with 'i' and continued by
-     * number are reserved for index
+     * number are reserved for index.
      *
      * @param dimensions is the number of indexes required
      */
@@ -235,7 +230,7 @@ public class Variables {
     }
 
     /**
-     * Updates the indexes
+     * Updates the indexes.
      *
      * @param values new indexes
      */
@@ -246,7 +241,7 @@ public class Variables {
     }
 
     /**
-     * Returns a number specified by name from map
+     * Returns a number specified by name from map.
      *
      * @param key name of the variable
      * @return variable
@@ -256,7 +251,7 @@ public class Variables {
     }
 
     /**
-     * Returns an array specified by name from map
+     * Returns an array specified by name from map.
      *
      * @param key name of the variable
      * @return variable
@@ -266,7 +261,7 @@ public class Variables {
     }
 
     /**
-     * Returns a set with the names of scalars
+     * Returns a set with the names of scalars.
      *
      * @return set with names
      */
@@ -275,7 +270,7 @@ public class Variables {
     }
 
     /**
-     * Returns the map of scalars
+     * Returns the map of scalars.
      *
      * @return map of scalars
      */
@@ -284,7 +279,7 @@ public class Variables {
     }
 
     /**
-     * Clears all stored data
+     * Clears all stored data.
      */
     public static void clear() {
         mDimensions = 0;
@@ -294,7 +289,7 @@ public class Variables {
     }
 
     /**
-     * Prints all variable
+     * Prints all variable.
      */
     public static void printAll() {
         System.out.println("Numbers: " + mNumbers.toString());
@@ -302,7 +297,7 @@ public class Variables {
     }
 
     /**
-     * Returns the name of the target variable
+     * Returns the name of the target variable.
      *
      * @return target variable
      */
@@ -311,7 +306,7 @@ public class Variables {
     }
 
     /**
-     * Returns the indexes
+     * Returns the indexes.
      *
      * @return array of indexes
      */

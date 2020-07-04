@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dpsolver.model;
 
 import java.util.ArrayList;
@@ -14,7 +9,7 @@ import java.util.Map;
 import net.objecthunter.exp4j.Expression;
 
 /**
- * Builds and solves the dynamic program from the given inputs
+ * Builds and solves the dynamic program from the given inputs.
  *
  * @author Elekes Attila
  */
@@ -35,7 +30,7 @@ public class DynamicProgram {
     private static Map<String, HashSet<int[]>> mHierarchy = new HashMap<>();
 
     /**
-     * Loads the input data and builds the dynamic program
+     * Loads the input data and builds the dynamic program.
      *
      * @param data
      */
@@ -161,7 +156,7 @@ public class DynamicProgram {
     }
 
     /**
-     * Resets the dynamic program
+     * Resets the dynamic program.
      */
     public static void restart() {
         Variables.clear();

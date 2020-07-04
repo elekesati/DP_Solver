@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dpsolver.helpers;
 
 import java.util.Arrays;
@@ -10,7 +5,7 @@ import java.util.List;
 import net.objecthunter.exp4j.operator.Operator;
 
 /**
- * Stores additional operators for exp4j
+ * Stores additional operators for exp4j.
  *
  * @author Elekes Attila
  */
@@ -118,7 +113,7 @@ public class AdditionalOperators {
     }
 
     /**
-     * Returns the operators
+     * Returns the operators.
      *
      * @return list of operators
      */

@@ -34,25 +34,25 @@
                     
                     <MenuItem text="New model" onAction="#newAction">
                         <accelerator>
-                            <KeyCodeCombination alt="ANY" code="N" control="DOWN" shift="ANY" meta="ANY" shortcut="ANY"/>     
+                            <KeyCodeCombination alt="UP" code="N" control="DOWN" shift="UP" meta="UP" shortcut="UP"/>     
                         </accelerator>
                     </MenuItem>
                     
                     <MenuItem text="Load model" onAction="#openAction">
                         <accelerator>
-                            <KeyCodeCombination alt="ANY" code="O" control="DOWN" shift="ANY" meta="ANY" shortcut="ANY"/>     
+                            <KeyCodeCombination alt="UP" code="O" control="DOWN" shift="UP" meta="UP" shortcut="UP"/>     
                         </accelerator>
                     </MenuItem>
                     
                     <MenuItem text="Save model" onAction="#saveAction">
                         <accelerator>
-                            <KeyCodeCombination alt="ANY" code="S" control="DOWN" shift="UP" meta="ANY" shortcut="ANY"/>     
+                            <KeyCodeCombination alt="UP" code="S" control="DOWN" shift="UP" meta="UP" shortcut="UP"/>     
                         </accelerator>
                     </MenuItem>
                     
                     <MenuItem text="Save model as" onAction="#saveAsAction">
                         <accelerator>
-                            <KeyCodeCombination alt="ANY" code="S" control="DOWN" shift="DOWN" meta="ANY" shortcut="ANY"/>     
+                            <KeyCodeCombination alt="UP" code="S" control="DOWN" shift="DOWN" meta="UP" shortcut="UP"/>     
                         </accelerator>
                     </MenuItem>
                     
@@ -64,7 +64,7 @@
                     
                     <MenuItem text="Run model" onAction="#runAction">
                         <accelerator>
-                            <KeyCodeCombination alt="ANY" code="R" control="DOWN" shift="ANY" meta="ANY" shortcut="ANY"/>     
+                            <KeyCodeCombination alt="UP" code="R" control="DOWN" shift="UP" meta="UP" shortcut="UP"/>     
                         </accelerator>
                     </MenuItem>
                     

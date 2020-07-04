@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dpsolver.model;
 
 import dpsolver.helpers.DimensionConverter;
@@ -11,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Stores a variable which can have any dimensions
+ * Stores a variable which can have any dimensions.
  *
  * @author Elekes Attila
  */
@@ -22,7 +17,7 @@ public class Variable {
     final List<Double> mValues;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param key name of the variable
      * @param bounds limits of each dimension
@@ -36,7 +31,7 @@ public class Variable {
 
     /**
      * Sets a variable, this method is used when the index is given in linear
-     * form
+     * form.
      *
      * @param value value of the variable
      * @param index index in linear form
@@ -47,7 +42,7 @@ public class Variable {
 
     /**
      * Sets a variable, this method is used when the indexes are given for each
-     * dimension
+     * dimension.
      *
      * @param value value of the variable
      * @param indexes index for each dimension
@@ -60,7 +55,7 @@ public class Variable {
 
     /**
      * Returns a value, this method is used when the index is given in linear
-     * form
+     * form.
      *
      * @param index index in linear form
      * @return value stored in the given index
@@ -71,7 +66,7 @@ public class Variable {
 
     /**
      * Returns a value, this method is used when the indexes are given for each
-     * dimension
+     * dimension.
      *
      * @param indexes index for each dimension
      * @return value stored in the given indexes
@@ -83,7 +78,7 @@ public class Variable {
     }
 
     /**
-     * Returns the name of the variable
+     * Returns the name of the variable.
      *
      * @return key
      */
@@ -92,7 +87,7 @@ public class Variable {
     }
 
     /**
-     * Returns the size of each dimension
+     * Returns the size of each dimension.
      *
      * @return array of dimensoion limits
      */
@@ -101,9 +96,9 @@ public class Variable {
     }
 
     /**
-     * Returns the value of the variable
+     * Returns the value of the variable.
      *
-     * @return value in string formt
+     * @return value in string format
      */
     @Override
     public String toString() {

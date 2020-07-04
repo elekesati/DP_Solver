@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dpsolver.helpers;
 
 import dpsolver.model.DynamicProgram;
@@ -12,7 +7,7 @@ import java.util.List;
 import net.objecthunter.exp4j.function.Function;
 
 /**
- * Stores additional functions for exp4j
+ * Stores additional functions for exp4j.
  *
  * @author Elekes Attila
  */
@@ -24,7 +19,7 @@ public class AdditionalFunctions {
     }
 
     /**
-     * Initializes with some basic functions, is called only once
+     * Initializes with some basic functions, is called only once.
      */
     public static void initialize() {
         mFunctions.add(new Function("max", 2) {
@@ -56,7 +51,7 @@ public class AdditionalFunctions {
     }
 
     /**
-     * Adds a new function that will be used by exp4j
+     * Adds a new function that will be used by exp4j.
      *
      * @param name name of the function
      * @param numArgs number of arguments
@@ -89,7 +84,7 @@ public class AdditionalFunctions {
     }
 
     /**
-     * Returns the functions
+     * Returns the functions.
      *
      * @return list of functions
      */
