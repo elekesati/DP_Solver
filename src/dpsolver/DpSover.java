@@ -127,7 +127,6 @@ public class DpSover extends Application {
     public static void closeAll() {
         if (visualizationStage != null) {
             if (visualizationStage.isShowing()) {
-                //visualizationStage.close();
                 visualizationStage.fireEvent(new WindowEvent(visualizationStage, WindowEvent.WINDOW_CLOSE_REQUEST));
             }
         }

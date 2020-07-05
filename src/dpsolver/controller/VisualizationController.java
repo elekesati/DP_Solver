@@ -257,9 +257,8 @@ public class VisualizationController implements Initializable {
     /**
      * Creates the row and column headers.
      *
-     * @param bounds number of cells in each direction
      */
-    private void setHeaders(int... bounds) {
+    private void setHeaders() {
         List<Node> children = space.getChildren();
 
         for (Node child : children) {
@@ -560,7 +559,7 @@ public class VisualizationController implements Initializable {
 
         setCellSize(bounds);
         createCells(bounds);
-        setHeaders(bounds);
+        setHeaders();
     }
 
     /**

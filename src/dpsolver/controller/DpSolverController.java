@@ -53,8 +53,8 @@ public class DpSolverController implements Initializable {
     private static final String RUNTIME_ERROR = "Runtime error - ";
     private static final String CANCEL = "Canceled.";
     private static final String WINDOW_ERROR = "Cannot open visualization window.";
-    private static final String EMPTY = "";
     private static final String STACKOVERFLOW = "Problem size is too big to can be resolved.";
+    private static final String EMPTY = "";
 
     private static final String UNSAVED_CHANGES_TITLE = "There are unsaved changes";
     private static final String UNSAVED_CHANGES_QUESTION = "Do you want to save changes?";
@@ -273,7 +273,7 @@ public class DpSolverController implements Initializable {
                 } catch (IllegalArgumentException ex) {
                     updateStatus(INPUT_ERROR + " " + ex.getMessage());
                 } catch (StackOverflowError ex) {
-                    updateStatus(STACKOVERFLOW);
+                    updateStatus(RUNTIME_ERROR + STACKOVERFLOW);
                 } catch (Exception ex) {
                     updateStatus(RUNTIME_ERROR + ex.getMessage());
                 } finally {
@@ -341,7 +341,7 @@ public class DpSolverController implements Initializable {
         if (Integer.parseInt(data.getDimension()) > 2) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setContentText("Visualization works only with 1-D or 2-D models.");
+            alert.setContentText("Visualization works only for 1-D or 2-D models.");
             alert.show();
             return;
         }

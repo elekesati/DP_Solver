@@ -33,6 +33,7 @@ public class DynamicProgram {
      * Loads the input data and builds the dynamic program.
      *
      * @param data
+     * @throws java.lang.Exception
      */
     public static void load(DpData data) throws Exception {
         List<String> branchList = data.getBranches();

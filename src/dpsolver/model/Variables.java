@@ -34,6 +34,7 @@ public class Variables {
      * Adds variables and their initial values to the map.
      *
      * @param variables contains the variables and the values in string format
+     * @throws java.lang.Exception
      */
     public static void addVariables(String[] variables) throws Exception {
         for (String string : variables) {
@@ -48,6 +49,7 @@ public class Variables {
      *
      * @param input contains the variable and the value in string format
      * @param isTarget flag for target variable
+     * @throws java.lang.Exception
      */
     public static void addVariable(String input, boolean isTarget) throws Exception {
         checkVariableInput(input);
